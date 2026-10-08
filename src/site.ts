@@ -4,7 +4,7 @@
 export const SITE_NAME = 'KSAN Relay'
 
 export const CONTACT = {
-  email: 'mail@ksanrelay.com',
+  email: 'dev.parthpancholi@outlook.com',
   github: 'https://github.com/ksanrelay',
   linkedin: 'https://www.linkedin.com/company/ksan-relay',
 } as const
