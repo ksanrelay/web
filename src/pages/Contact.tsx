@@ -55,6 +55,14 @@ export default function Contact() {
               </dd>
             </div>
           </dl>
+          <div className="contact-actions">
+            <a className="button button--primary" href={`mailto:${CONTACT.email}`}>
+              Email KSAN Relay
+            </a>
+            <ExternalLink href={CONTACT.github} className="button">
+              GitHub
+            </ExternalLink>
+          </div>
           <p className="note">
             KSAN Relay does not provide investment advice and cannot respond to requests for it. Please do not send
             confidential or sensitive personal information by email.

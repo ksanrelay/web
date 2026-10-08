@@ -15,32 +15,34 @@ export default function Research() {
     <PageShell
       meta={ROUTES.research}
       label="RESEARCH"
-      figure={<AutocorrelationFigure />}
       title="Research"
       lead="Research at KSAN Relay is currently ongoing. Selected work will be published when it reaches an appropriate level of methodological and technical maturity."
-    >
-      <div className="research-status">
-        <dl className="card status-table">
-          {STATUS.map(([key, value]) => (
-            <div key={key} className="status-table__row">
-              <dt>
-                <TechnicalLabel>{key}</TechnicalLabel>
-              </dt>
-              <dd className="mono">{value}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="prose">
-          <p>Some research may remain private during active development and validation.</p>
-          <p>
-            Where code, data handling, or methodology can be shared, it will be released with an explicit license and a
-            statement of its assumptions and limitations. Anything published here is research, not investment advice.
-          </p>
-          <p>
-            <ExternalLink href={CONTACT.github}>KSAN Relay on GitHub</ExternalLink>
-          </p>
-        </div>
-      </div>
-    </PageShell>
+      figure={<AutocorrelationFigure />}
+      intro={
+        <>
+          <dl className="card status-table">
+            {STATUS.map(([key, value]) => (
+              <div key={key} className="status-table__row">
+                <dt>
+                  <TechnicalLabel>{key}</TechnicalLabel>
+                </dt>
+                <dd className="mono">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="prose intro-prose">
+            <p>Some research may remain private during active development and validation.</p>
+            <p>
+              Where code, data handling, or methodology can be shared, it will be released with an explicit license and
+              a statement of its assumptions and limitations. Anything published here is research, not investment
+              advice.
+            </p>
+            <p>
+              <ExternalLink href={CONTACT.github}>KSAN Relay on GitHub</ExternalLink>
+            </p>
+          </div>
+        </>
+      }
+    />
   )
 }
