@@ -1,11 +1,10 @@
-import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import EquationAccent from '../components/EquationAccent.tsx'
 import ExternalLink from '../components/ExternalLink.tsx'
+import LogoMark from '../components/LogoMark.tsx'
 import PageShell from '../components/PageShell.tsx'
 import ResearchCard from '../components/ResearchCard.tsx'
 import Section from '../components/Section.tsx'
-import TechnicalLabel from '../components/TechnicalLabel.tsx'
 import { CONTACT, ROUTES } from '../site.ts'
 
 const AREAS = [
@@ -68,9 +67,12 @@ export default function Home() {
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__text">
           <h1 id="hero-title" className="hero__title">
-            <span className="hero__eyebrow">KSAN RELAY</span>
+            <span className="hero__eyebrow">
+              <LogoMark className="hero__mark" />
+              KSAN RELAY
+            </span>
             <span className="hero__headline">
-              Quantitative Research <span className="hero__amp">&amp;</span> Computational Finance
+              Quantitative Research &amp; Computational Finance
             </span>
           </h1>
           <p className="hero__lead">
@@ -80,7 +82,6 @@ export default function Home() {
           <div className="hero__actions">
             <Link to={ROUTES.research.path} className="button button--primary">
               Research
-              <ArrowRight size={16} strokeWidth={1.75} aria-hidden="true" />
             </Link>
             <Link to={ROUTES.about.path} className="button">
               About
@@ -96,8 +97,8 @@ export default function Home() {
 
       <Section index="01" label="RESEARCH AREAS" title="Areas of study" aside="MODEL / VALIDATE / ITERATE">
         <div className="grid grid--3">
-          {AREAS.map((area, i) => (
-            <ResearchCard key={area.title} index={String(i + 1).padStart(2, '0')} {...area} />
+          {AREAS.map(area => (
+            <ResearchCard key={area.title} {...area} />
           ))}
         </div>
       </Section>
@@ -106,15 +107,14 @@ export default function Home() {
         <blockquote className="pull-quote">
           Research should be falsifiable, reproducible, and explicit about its assumptions.
         </blockquote>
-        <ol className="principles">
-          {PRINCIPLES.map((p, i) => (
+        <ul className="principles">
+          {PRINCIPLES.map(p => (
             <li key={p.title} className="principles__item">
-              <TechnicalLabel className="principles__index">{String(i + 1).padStart(2, '0')}</TechnicalLabel>
               <h3 className="principles__title">{p.title}</h3>
               <p className="principles__body">{p.body}</p>
             </li>
           ))}
-        </ol>
+        </ul>
       </Section>
 
       <Section index="03" label="OPEN RESEARCH" title="Code and notes" aside="STATE / TRANSITION">

@@ -1,9 +1,22 @@
+import { Fragment } from 'react'
 import ExternalLink from '../components/ExternalLink.tsx'
 import PageShell from '../components/PageShell.tsx'
 import TechnicalLabel from '../components/TechnicalLabel.tsx'
 import { CONTACT, ROUTES } from '../site.ts'
 
-const display = (url: string) => url.replace(/^https:\/\/(www\.)?/, '')
+/** Strip the scheme and allow line breaks after each "/" so long URLs wrap cleanly on narrow screens. */
+function display(url: string) {
+  const parts = url.replace(/^https:\/\/(www\.)?/, '').split('/')
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      <span className="nowrap">
+        {part}
+        {i < parts.length - 1 && '/'}
+      </span>
+      {i < parts.length - 1 && <wbr />}
+    </Fragment>
+  ))
+}
 
 export default function Contact() {
   return (
