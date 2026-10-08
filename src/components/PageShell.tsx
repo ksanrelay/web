@@ -12,12 +12,16 @@ interface PageShellProps {
   lead?: ReactNode
   /** Right-hand notation in the page header, e.g. "E[X | F]". */
   notation?: string
+  /** Figure shown to the right of the title and lead (stacked below them on small screens). */
+  figure?: ReactNode
+  /** Extra content kept in the left column under the lead when a figure is shown. */
+  intro?: ReactNode
   children?: ReactNode
   className?: string
 }
 
 /** Standard page frame: sets document metadata and renders the page header. */
-export default function PageShell({ meta, label, title, lead, notation, children, className }: PageShellProps) {
+export default function PageShell({ meta, label, title, lead, notation, figure, intro, children, className }: PageShellProps) {
   usePageMeta(meta)
   return (
     <div className={clsx('container page', className)}>
@@ -31,8 +35,21 @@ export default function PageShell({ meta, label, title, lead, notation, children
               </TechnicalLabel>
             )}
           </div>
-          <h1 className="page__title">{title}</h1>
-          {lead && <p className="page__lead">{lead}</p>}
+          {figure ? (
+            <div className="page__intro">
+              <div className="page__intro-text">
+                <h1 className="page__title">{title}</h1>
+                {lead && <p className="page__lead">{lead}</p>}
+                {intro}
+              </div>
+              {figure}
+            </div>
+          ) : (
+            <>
+              <h1 className="page__title">{title}</h1>
+              {lead && <p className="page__lead">{lead}</p>}
+            </>
+          )}
         </header>
       )}
       {children}

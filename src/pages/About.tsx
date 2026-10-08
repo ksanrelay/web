@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import DistributionFigure from '../components/figures/DistributionFigure.tsx'
 import PageShell from '../components/PageShell.tsx'
 import Section from '../components/Section.tsx'
 import { ROUTES } from '../site.ts'
@@ -20,7 +21,7 @@ export default function About() {
     <PageShell
       meta={ROUTES.about}
       label="ABOUT"
-      notation="∇f(x)"
+      figure={<DistributionFigure />}
       title="About KSAN Relay"
       lead="KSAN Relay is an independent quantitative research organization focused on the application of mathematics, statistics, physics-inspired modeling, and computer science to financial markets."
     >

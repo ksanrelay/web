@@ -1,4 +1,5 @@
 import ExternalLink from '../components/ExternalLink.tsx'
+import AutocorrelationFigure from '../components/figures/AutocorrelationFigure.tsx'
 import PageShell from '../components/PageShell.tsx'
 import TechnicalLabel from '../components/TechnicalLabel.tsx'
 import { CONTACT, ROUTES } from '../site.ts'
@@ -14,7 +15,7 @@ export default function Research() {
     <PageShell
       meta={ROUTES.research}
       label="RESEARCH"
-      notation="E[X | 𝓕]"
+      figure={<AutocorrelationFigure />}
       title="Research"
       lead="Research at KSAN Relay is currently ongoing. Selected work will be published when it reaches an appropriate level of methodological and technical maturity."
     >
