@@ -5,7 +5,7 @@ interface LogoMarkProps {
   title?: string
 }
 
-/** KSAN Relay relay/pulse mark. Monochrome; inherits colour from `currentColor`. */
+/** KSAN RELAY relay/pulse mark. Monochrome; inherits colour from `currentColor`. */
 export default function LogoMark({ className, title }: LogoMarkProps) {
   return (
     <svg

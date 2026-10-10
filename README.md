@@ -1,6 +1,6 @@
-# KSAN Relay — website
+# KSAN RELAY — website
 
-Static site for KSAN Relay, an independent quantitative research firm. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
+Static site for KSAN RELAY, an independent quantitative research and proprietary trading firm. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
 
 ## Development
 
@@ -41,19 +41,22 @@ Vercel adds `X-Robots-Tag: noindex` to preview deployments by default, so stagin
 
 ```
 src/
-├── components/   Navbar, MobileNav, ParticleBackground, PageShell, Section, ResearchCard,
-│                 TechnicalLabel, EquationAccent, Footer, ExternalLink, LogoMark
-├── pages/        Home, Research, About, Contact, Privacy, Terms, Disclaimer, NotFound
+├── components/   Navbar, MobileNav, PageShell, Section, PublicationList, ReleaseList,
+│                 TechnicalLabel, EquationAccent, Footer, ExternalLink, LogoMark, figures/
+├── content/      publications.ts: research publications and open-source releases
+├── pages/        Home, Research, OpenSource, About, Contact, Policy, Privacy, Terms, Disclaimer, NotFound
 ├── styles/       global.css (design tokens + all styles)
 ├── site.ts       contact details and route metadata (also used by vite.config.ts)
 └── usePageMeta.ts
 ```
 
-The particle layer (`tsParticles`) is lazy-loaded after first paint. It uses fewer particles on small or low-power devices and stops moving when `prefers-reduced-motion` is set.
+## Publishing research and releases
+
+Add entries to `PUBLICATIONS` or `RELEASES` in `src/content/publications.ts`. They appear on the Research or Open Source page, newest first. While a list is empty, its page shows a short empty state.
 
 ## Legal pages
 
-The Disclaimer, Terms of Use and Privacy Policy are **general templates, not legal advice**. Have a qualified lawyer review them before relying on them commercially, and before KSAN Relay begins any regulated activity (including any applicable Indian/SEBI requirements).
+The Disclaimer, Terms of Use and Privacy Policy are **general templates, not legal advice**. Have a qualified lawyer review them before relying on them commercially, and before KSAN RELAY begins any regulated activity (including any applicable Indian/SEBI requirements).
 
 ## Account security
 
@@ -61,4 +64,4 @@ Turn on 2FA (passkeys where possible) for the GitHub and Vercel accounts. Depend
 
 ## Licensing
 
-Website content: © 2026 KSAN Relay. All rights reserved. Research code and publications are licensed individually, and each one states its own license.
+Website content: © 2026 KSAN RELAY. All rights reserved. Research code and publications are licensed individually, and each one states its own license.

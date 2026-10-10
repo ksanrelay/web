@@ -85,6 +85,9 @@ export default function AutocorrelationFigure() {
       <text className="plot__text" x={-8} y={y(1) + 4} textAnchor="end">
         1
       </text>
+      <text className="plot__text" x={-8} y={y(0.5) + 4} textAnchor="end">
+        .5
+      </text>
       <text className="plot__text" x={-8} y={y(0) + 4} textAnchor="end">
         0
       </text>
@@ -96,7 +99,7 @@ export default function AutocorrelationFigure() {
       <text className="plot__text plot__text--label" x={x(2) + 12} y={y(PHI ** 2) - 8}>
         φᵏ
       </text>
-      <text className="plot__text plot__text--label" x={W / 2} y={H + 18} textAnchor="middle">
+      <text className="plot__text plot__text--label" x={x(25)} y={H + 18} textAnchor="middle">
         lag k
       </text>
     </FigureFrame>

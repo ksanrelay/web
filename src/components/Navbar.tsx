@@ -1,7 +1,6 @@
 import { Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import ExternalLink from './ExternalLink.tsx'
 import LogoMark from './LogoMark.tsx'
 import MobileNav from './MobileNav.tsx'
 import { NAV_ITEMS } from './nav-items.ts'
@@ -41,7 +40,7 @@ export default function Navbar() {
   return (
     <header className="navbar" ref={headerRef}>
       <nav className="navbar__pill" aria-label="Primary">
-        <Link to="/" className="navbar__brand" aria-label="KSAN Relay — home">
+        <Link to="/" className="navbar__brand" aria-label="KSAN RELAY — home">
           <LogoMark className="navbar__mark" />
           <span className="navbar__wordmark">KSAN RELAY</span>
         </Link>
@@ -49,15 +48,9 @@ export default function Navbar() {
         <ul className="navbar__links">
           {NAV_ITEMS.map(item => (
             <li key={item.label}>
-              {item.external ? (
-                <ExternalLink href={item.href} className="navbar__link">
-                  {item.label}
-                </ExternalLink>
-              ) : (
-                <NavLink to={item.to} className="navbar__link">
-                  {item.label}
-                </NavLink>
-              )}
+              <NavLink to={item.to} className="navbar__link">
+                {item.label}
+              </NavLink>
             </li>
           ))}
         </ul>

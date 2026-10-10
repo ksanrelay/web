@@ -63,7 +63,7 @@ export default function SpectrumFigure() {
         ['Signal', 'xₜ = Σⱼ Aⱼ sin(2πfⱼt/n) + εₜ'],
         ['Power', 'S(f) = |Σₜ xₜ e^(−2πift/n)|² / n'],
         ['Peaks', `f = ${TOP_TWO.map(p => p.f).sort((a, b) => a - b).join(', ')}; ${SNR_DB.toFixed(1)} dB above median`],
-        ['Cost', 'O(n log n) with FFT'],
+        ['Floor', `median S(f) = ${NOISE_FLOOR.toFixed(2)}`],
       ]}
       source={`Simulated, n = ${N}, two tones plus Gaussian noise (σ = ${NOISE}). Illustrative only.`}
     >
@@ -71,7 +71,7 @@ export default function SpectrumFigure() {
         {[0.25, 0.5, 0.75].map(f => (
           <line key={`t${f}`} x1={f * W} y1={0} x2={f * W} y2={TOP_H} />
         ))}
-        {[16, 32, 48].map(f => (
+        {[32, 64, 96].map(f => (
           <line key={`f${f}`} x1={fx(f)} y1={BOTTOM_Y} x2={fx(f)} y2={BOTTOM_Y + BOTTOM_H} />
         ))}
       </g>
@@ -102,8 +102,13 @@ export default function SpectrumFigure() {
       <text className="plot__text" x={0} y={H + 18}>
         frequency f
       </text>
-      <text className="plot__text" x={W} y={H + 18} textAnchor="end">
-        {HALF}
+      {[64, HALF].map(f => (
+        <text key={f} className="plot__text" x={fx(f)} y={H + 18} textAnchor={f === HALF ? 'end' : 'middle'}>
+          {f}
+        </text>
+      ))}
+      <text className="plot__text" x={W} y={sy(NOISE_FLOOR) - 6} textAnchor="end">
+        median
       </text>
     </FigureFrame>
   )

@@ -25,7 +25,7 @@ export default function Contact() {
       meta={ROUTES.contact}
       label="CONTACT"
       title="Contact"
-      lead="For research correspondence, collaboration, or questions about published work."
+      lead="For research correspondence and questions about publications or open-source releases."
       figure={<SpectrumFigure />}
       intro={
         <>
@@ -57,15 +57,15 @@ export default function Contact() {
           </dl>
           <div className="contact-actions">
             <a className="button button--primary" href={`mailto:${CONTACT.email}`}>
-              Email KSAN Relay
+              Email KSAN RELAY
             </a>
             <ExternalLink href={CONTACT.github} className="button">
               GitHub
             </ExternalLink>
           </div>
           <p className="note">
-            KSAN Relay does not provide investment advice and cannot respond to requests for it. Please do not send
-            confidential or sensitive personal information by email.
+            KSAN RELAY does not accept external capital or provide investment advice, and cannot respond to requests
+            for either. Please do not send confidential or sensitive personal information by email.
           </p>
         </>
       }

@@ -105,11 +105,15 @@ export default function DistributionFigure() {
       <text className="plot__text plot__text--label" x={px(3) + 6} y={py(0.3) + 10}>
         3σ
       </text>
-      <text className="plot__text plot__text--label" x={px(0.95)} y={py(0.42)}>
+      {/* Each curve is labelled beside its own shoulder: t₆ on the right, the Gaussian on the left. */}
+      <text className="plot__text plot__text--label" x={px(0.5) + 6} y={py(studentT(0.5)) - 4}>
         t₆
       </text>
-      <text className="plot__text" x={px(-1.45)} y={py(0.3)} textAnchor="end">
+      <text className="plot__text" x={px(-0.85) - 6} y={py(gaussian(-0.85)) - 4} textAnchor="end">
         N(0,1)
+      </text>
+      <text className="plot__text plot__text--label" x={px(-3) - 6} y={py(0.3) + 10} textAnchor="end">
+        −3σ
       </text>
     </FigureFrame>
   )

@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { NavLink } from 'react-router-dom'
-import ExternalLink from './ExternalLink.tsx'
 import { NAV_ITEMS } from './nav-items.ts'
 
 interface MobileNavProps {
@@ -16,15 +15,9 @@ export default function MobileNav({ id, open, onNavigate }: MobileNavProps) {
       <ul className="mobile-nav__list">
         {NAV_ITEMS.map(item => (
           <li key={item.label}>
-            {item.external ? (
-              <ExternalLink href={item.href} className="mobile-nav__link">
-                {item.label}
-              </ExternalLink>
-            ) : (
-              <NavLink to={item.to} className="mobile-nav__link" onClick={onNavigate}>
-                {item.label}
-              </NavLink>
-            )}
+            <NavLink to={item.to} className="mobile-nav__link" onClick={onNavigate}>
+              {item.label}
+            </NavLink>
           </li>
         ))}
       </ul>

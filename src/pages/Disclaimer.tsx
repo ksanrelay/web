@@ -3,60 +3,68 @@ import PageShell from '../components/PageShell.tsx'
 import TechnicalLabel from '../components/TechnicalLabel.tsx'
 import { ROUTES } from '../site.ts'
 
-// General drafting guidance only — have this reviewed by a qualified lawyer (including for Indian/SEBI
-// requirements) before KSAN Relay relies on it or undertakes any regulated activity.
-
 export default function Disclaimer() {
   return (
-    <PageShell meta={ROUTES.disclaimer} label="LEGAL" title="Disclaimer">
+    <PageShell meta={ROUTES.disclaimer} label="POLICY" title="Disclaimer">
       <TechnicalLabel as="p" className="legal-updated">
-        LAST UPDATED — 9 OCTOBER 2026
+        LAST UPDATED — 11 OCTOBER 2026
       </TechnicalLabel>
       <div className="prose legal">
-        <h2>Research and information only</h2>
+        <h2 id="financial">Financial and investment disclaimer</h2>
         <p>
-          KSAN Relay publishes quantitative, computational, and financial research for informational, educational, and
-          research purposes only. Nothing published on this website constitutes investment advice, financial advice, a
-          recommendation, solicitation, or an offer to buy or sell any security, derivative, financial instrument, or
-          investment product.
+          Content on this website is published for informational and research purposes only. Nothing on this website
+          constitutes:
+        </p>
+        <ul>
+          <li>investment, financial, legal or tax advice;</li>
+          <li>a recommendation, solicitation or offer to buy or sell any security, derivative or other financial instrument;</li>
+          <li>brokerage, portfolio-management or fund-management services.</li>
+        </ul>
+
+        <h2>Proprietary trading</h2>
+        <p>
+          KSAN RELAY is a proprietary trading firm. It trades only its own capital and does not accept, manage or
+          invest external or client capital. KSAN RELAY may hold, or may have held, positions in instruments or markets
+          discussed in its research, and is not obliged to disclose them.
         </p>
 
-        <h2>Models, simulations, and historical analysis</h2>
+        <h2>No advisory or client relationship</h2>
         <p>
-          Any models, simulations, backtests, hypothetical results, or historical analyses may rely on assumptions and
-          may not reflect actual trading conditions. Past performance, simulated performance, or research findings do
-          not guarantee future results.
-        </p>
-        <p>
-          Hypothetical and simulated results have inherent limitations. They are typically prepared with the benefit of
-          hindsight, may not account for transaction costs, liquidity, market impact, or other frictions, and do not
-          represent actual trading.
+          KSAN RELAY does not provide brokerage, investment advisory, portfolio-management, insurance or financial
+          consultancy services. Reading this website, using its content or contacting KSAN RELAY does not create an
+          advisory, fiduciary or client relationship.
         </p>
 
-        <h2>No representation of accuracy or suitability</h2>
+        <h2>Research, models and results</h2>
         <p>
-          KSAN Relay makes no representation that information published on this website is complete, error-free, or
-          suitable for any particular investment decision. Information may be out of date, and may be changed or removed
-          without notice.
-        </p>
-
-        <h2>No advisory relationship</h2>
-        <p>
-          KSAN Relay does not provide investment advisory, portfolio management, brokerage, or research analyst services
-          through this website. Reading this website or contacting KSAN Relay does not create an advisory, fiduciary, or
-          client relationship.
+          Research may be incomplete, experimental or subject to revision. Models, simulations, backtests and
+          historical analyses rely on assumptions and may not reflect actual trading conditions, including transaction
+          costs, liquidity and market impact. Historical or simulated results, if published, do not guarantee future
+          results.
         </p>
 
         <h2>Your own decisions</h2>
         <p>
-          You are solely responsible for any decision you make. Before making any financial decision, consider your own
-          circumstances and seek advice from an appropriately qualified and, where required, registered professional.
+          You are responsible for your own decisions. Make them independently and, where required, seek advice from an
+          appropriately qualified and registered professional.
         </p>
 
-        <h2>Third-party information</h2>
+        <h2 id="open-source">Open-source software, datasets and research outputs</h2>
+        <ul>
+          <li>Open-source software released by KSAN RELAY may be experimental and may contain defects.</li>
+          <li>Datasets may contain errors, omissions or limitations.</li>
+          <li>Research outputs may change as work is revised.</li>
+          <li>
+            Individual repositories and datasets may have separate licenses. Where a license is specified, that license
+            controls reuse of the material it covers.
+          </li>
+        </ul>
+
+        <h2>Accuracy and third-party information</h2>
         <p>
-          Research may reference third-party data, software, or publications. KSAN Relay does not control and is not
-          responsible for third-party content, and a reference is not an endorsement.
+          KSAN RELAY does not represent that content on this website is complete, current or error-free. Content may
+          be changed or removed without notice. Research may reference third-party data, software or publications;
+          KSAN RELAY does not control third-party content, and a reference is not an endorsement.
         </p>
 
         <p>

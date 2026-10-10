@@ -4,16 +4,11 @@ import PageShell from '../components/PageShell.tsx'
 import Section from '../components/Section.tsx'
 import { ROUTES } from '../site.ts'
 
-const INTERESTS = [
-  'Quantitative finance',
-  'Systematic methods',
-  'Time-series analysis',
-  'Statistical learning',
-  'Optimization',
-  'Market microstructure',
-  'Computational methods',
-  'Simulation',
-  'Scientific computing',
+const PROFILE: [term: string, value: string][] = [
+  ['Firm', 'Independent quantitative research and proprietary trading firm'],
+  ['Research', 'Quantitative finance, statistics, market behavior, algorithmic systems'],
+  ['Publishes', 'Research papers, models, datasets, libraries and research tools'],
+  ['Capital', 'Own capital only. No external or client capital'],
 ]
 
 export default function About() {
@@ -21,46 +16,43 @@ export default function About() {
     <PageShell
       meta={ROUTES.about}
       label="ABOUT"
-      title="About KSAN Relay"
-      lead="KSAN Relay is an independent quantitative research organization focused on the application of mathematics, statistics, physics-inspired modeling, and computer science to financial markets."
+      title="About KSAN RELAY"
+      lead="KSAN RELAY is an independent quantitative research and proprietary trading firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
       figure={<DistributionFigure />}
       intro={
-        <div className="intro-block">
-          <h2 className="intro-block__title">Research interests may include</h2>
-          <ul className="interest-list">
-            {INTERESTS.map(item => (
-              <li key={item} className="interest-list__item">
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <dl className="kv-table">
+          {PROFILE.map(([term, value]) => (
+            <div key={term} className="kv-table__row">
+              <dt>{term}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
       }
     >
       <div className="section-pair">
         <Section index="01" label="APPROACH" title="Approach">
           <div className="prose">
             <p>
-              The work treats markets as a measurement problem. Questions are framed as testable hypotheses, studied
-              with explicit models, and checked against data that the model did not see while it was being built.
+              We treat markets as a measurement problem. Questions are framed as testable hypotheses, studied with
+              explicit models, and checked against data the model did not see while it was being built.
             </p>
             <p>
-              Methods are borrowed freely across disciplines: stochastic processes and inference from statistics,
-              numerical methods and optimization from applied mathematics, and modeling habits from physics,
-              implemented with the engineering discipline of computer science.
+              Methods come from statistics, applied mathematics and computer science: stochastic processes and
+              inference, numerical methods and optimization, and the engineering needed to make results reproducible.
             </p>
           </div>
         </Section>
 
-        <Section index="02" label="SCOPE" title="Scope">
+        <Section index="02" label="OPERATING MODEL" title="Operating model">
           <div className="prose">
             <p>
-              KSAN Relay is a research organization. It does not manage outside capital, accept client funds, offer
-              investment products, or provide investment advice or recommendations.
+              KSAN RELAY trades only its own capital. It does not manage external capital and does not provide
+              brokerage, investment advisory, portfolio-management, insurance or financial consultancy services.
             </p>
             <p>
-              See the <Link to={ROUTES.disclaimer.path}>disclaimer</Link> for how published research should and should
-              not be used.
+              See the <Link to={ROUTES.disclaimer.path}>disclaimer</Link> for how published research and open-source
+              work should be used.
             </p>
           </div>
         </Section>

@@ -3,19 +3,16 @@ import PageShell from '../components/PageShell.tsx'
 import TechnicalLabel from '../components/TechnicalLabel.tsx'
 import { CONTACT, ROUTES } from '../site.ts'
 
-// Subject to final legal review. Update this page before adding analytics, forms, embeds, or any
-// third-party script.
-
 export default function Privacy() {
   return (
-    <PageShell meta={ROUTES.privacy} label="LEGAL" title="Privacy Policy">
+    <PageShell meta={ROUTES.privacy} label="POLICY" title="Privacy Policy">
       <TechnicalLabel as="p" className="legal-updated">
-        LAST UPDATED — 9 OCTOBER 2026
+        LAST UPDATED — 11 OCTOBER 2026
       </TechnicalLabel>
       <div className="prose legal">
         <p>
-          This website is a static site. It is designed to collect as little personal data as possible. This policy
-          explains what data may still be processed and why.
+          This website is a static site with no accounts, forms or analytics. This policy explains the limited data
+          that is still processed and why.
         </p>
 
         <h2>What this website does not do</h2>
@@ -39,13 +36,16 @@ export default function Privacy() {
         </p>
         <h3>Email</h3>
         <p>
-          If you email KSAN Relay, the information you choose to send — your email address, name, and message — is
+          If you email KSAN RELAY, the information you choose to send — your email address, name, and message — is
           used only to read and respond to your message, and is kept only as long as needed for that purpose or as
           required by law.
         </p>
 
-        <h2>Cookies and local storage</h2>
-        <p>The website does not set cookies or use browser storage for tracking.</p>
+        <h2 id="cookies">Cookies and local storage</h2>
+        <p>
+          The website does not set cookies and does not use local storage, session storage or similar browser storage.
+          No cookie banner is needed because there is nothing to consent to.
+        </p>
 
         <h2>External links</h2>
         <p>
@@ -62,12 +62,13 @@ export default function Privacy() {
 
         <h2>Changes</h2>
         <p>
-          If the website starts processing additional data — for example, privacy-respecting analytics — this policy
-          will be updated before that change takes effect. The date at the top of this page shows the latest revision.
+          If the website starts processing additional data, this policy will be updated before that change takes
+          effect. The date at the top of this page shows the latest revision.
         </p>
 
         <p>
-          See also the <Link to={ROUTES.terms.path}>Terms of Use</Link>.
+          See also the <Link to={ROUTES.terms.path}>Terms of Use</Link> and{' '}
+          <Link to={ROUTES.disclaimer.path}>Disclaimer</Link>.
         </p>
       </div>
     </PageShell>
