@@ -21,7 +21,7 @@ const DEFAULT_DESCRIPTION =
 export const ROUTES = {
   home: {
     path: '/',
-    title: 'KSAN RELAY — Quantitative Research & Proprietary Trading',
+    title: 'KSAN RELAY — Quantitative Research & Trading Firm',
     description: DEFAULT_DESCRIPTION,
   },
   research: {
