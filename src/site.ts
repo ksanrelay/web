@@ -1,5 +1,5 @@
 // Site-wide configuration and per-route metadata.
-// Kept free of JSX/DOM code so vite.config.ts can import it for robots.txt and sitemap.xml.
+// Kept free of JSX/DOM code so vite.config.ts and the prerender script can import it.
 
 export const SITE_NAME = 'KSAN RELAY'
 
@@ -13,10 +13,12 @@ export interface RouteMeta {
   path: string
   title: string
   description: string
+  /** Ask search engines not to index the page. */
+  noindex?: boolean
 }
 
 const DEFAULT_DESCRIPTION =
-  'KSAN RELAY is an independent quantitative research and proprietary trading firm. It develops data-driven models, publishes research and open-source tools, and trades its own capital.'
+  'Independent quantitative research and trading firm. KSAN RELAY builds data-driven models, publishes research and open-source tools, and trades its own capital.'
 
 export const ROUTES = {
   home: {
@@ -66,7 +68,7 @@ export const ROUTES = {
     path: '/disclaimer',
     title: 'Disclaimer — KSAN RELAY',
     description:
-      'Content on the KSAN RELAY website is for informational and research purposes. It is not investment advice, and KSAN RELAY does not accept or manage client capital.',
+      'Website content is for informational and research purposes only. It is not investment advice, and KSAN RELAY does not accept or manage client capital.',
   },
 } satisfies Record<string, RouteMeta>
 
@@ -74,6 +76,7 @@ export const NOT_FOUND: RouteMeta = {
   path: '',
   title: 'Page Not Found — KSAN RELAY',
   description: DEFAULT_DESCRIPTION,
+  noindex: true,
 }
 
 /** Normalise a configured site URL: trim whitespace and trailing slashes. Empty → undefined. */

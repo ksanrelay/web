@@ -24,12 +24,14 @@ Set `VITE_SITE_URL` in the Vercel **Production** environment only after the cust
 
 Contact details (email, GitHub, LinkedIn) and per-page titles and descriptions are in `src/site.ts`.
 
+`npm run build` prerenders every route (`scripts/prerender.mjs`, using `src/entry-server.tsx`), so each page ships as static HTML with its own title, description, canonical and Open Graph tags; the home page also carries Organization structured data (`src/seo.ts`). The client then hydrates the markup. Components must render the same output on the server and in the browser, so keep browser-only APIs inside effects.
+
 ## Deployment (Vercel)
 
 `vercel.json` configures:
 
 - the Vite framework preset and the `dist/` output
-- an SPA rewrite, so direct visits to `/research` etc. load `index.html`
+- `cleanUrls`, so `/research` serves the prerendered `research.html`, and unknown paths get `404.html` with a real 404 status
 - security headers: CSP, HSTS, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options`, COOP
 - long-lived caching for hashed files in `/assets`
 

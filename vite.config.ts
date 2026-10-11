@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
+import { headTags } from './src/seo.ts'
 import { ROUTES, normaliseSiteUrl } from './src/site.ts'
 
 // Keep in sync with the headers in vercel.json so `npm run preview` exercises the production CSP.
@@ -14,21 +15,18 @@ const SECURITY_HEADERS = {
 
 /**
  * Domain-dependent SEO output. Driven by VITE_SITE_URL (e.g. https://ksanrelay.com):
- * - set:   canonical + og:url + absolute og:image in index.html, robots.txt with Sitemap, sitemap.xml
+ * - set:   canonical + og:url + absolute og:image on every page, robots.txt with Sitemap, sitemap.xml
  * - unset: relative og:image, robots.txt without Sitemap, no sitemap.xml
+ * The dev server gets the home page's head tags; production builds leave <!--head--> for
+ * scripts/prerender.mjs, which writes per-route tags into each prerendered page.
  */
 function seo(siteUrl: string | undefined): Plugin {
   return {
     name: 'ksan-seo',
-    transformIndexHtml(html) {
-      const tags = siteUrl
-        ? [
-            `<link rel="canonical" href="${siteUrl}/" />`,
-            `<meta property="og:url" content="${siteUrl}/" />`,
-            `<meta property="og:image" content="${siteUrl}/og-image.png" />`,
-          ]
-        : [`<meta property="og:image" content="/og-image.png" />`]
-      return html.replace('<!--seo-->', tags.join('\n    '))
+    // Only the client build emits robots.txt and sitemap.xml, not the prerender (SSR) build.
+    applyToEnvironment: environment => environment.name === 'client',
+    transformIndexHtml(html, ctx) {
+      return ctx.server ? html.replace('<!--head-->', headTags(ROUTES.home, siteUrl)) : html
     },
     generateBundle() {
       const robots = ['User-agent: *', 'Allow: /']
