@@ -14,7 +14,7 @@ export default function Home() {
             KSAN RELAY
           </p>
           <h1 id="hero-title" className="hero__headline">
-            Quantitative research. Proprietary capital.
+            Quantitative Research &amp; Trading Firm
           </h1>
           <p className="hero__lead">
             KSAN RELAY develops data-driven models and computational methods for financial markets, publishes research
