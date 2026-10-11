@@ -27,7 +27,7 @@ export default function Home() {
           <ul className="hero__meta dot-list tech-label" aria-label="Activities">
             <li>Research</li>
             <li>Open Source</li>
-            <li>Proprietary Trading</li>
+            <li>Markets</li>
           </ul>
           <div className="hero__actions">
             <Link to={ROUTES.research.path} className="button button--primary">
