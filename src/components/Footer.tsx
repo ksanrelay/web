@@ -58,7 +58,7 @@ export default function Footer() {
               <span className="footer__name">KSAN RELAY</span>
             </Link>
             <p className="footer__descriptor">
-              Independent quantitative research and proprietary trading firm.
+              Independent quantitative finance firm.
             </p>
           </div>
 
@@ -93,7 +93,7 @@ export default function Footer() {
           <ul className="dot-list tech-label" aria-label="Activities">
             <li>Research</li>
             <li>Open Source</li>
-            <li>Proprietary Trading</li>
+            <li>Markets</li>
           </ul>
         </div>
       </div>

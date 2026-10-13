@@ -7,7 +7,7 @@ export default function Disclaimer() {
   return (
     <PageShell meta={ROUTES.disclaimer} label="POLICY" title="Disclaimer">
       <TechnicalLabel as="p" className="legal-updated">
-        LAST UPDATED — 11 OCTOBER 2026
+        LAST UPDATED — 14 OCTOBER 2026
       </TechnicalLabel>
       <div className="prose legal">
         <h2 id="financial">Financial and investment disclaimer</h2>
@@ -21,10 +21,10 @@ export default function Disclaimer() {
           <li>brokerage, portfolio-management or fund-management services.</li>
         </ul>
 
-        <h2>Proprietary trading</h2>
+        <h2>Trading own capital</h2>
         <p>
-          KSAN RELAY is a proprietary trading firm. It trades only its own capital and does not accept, manage or
-          invest external or client capital. KSAN RELAY may hold, or may have held, positions in instruments or markets
+          KSAN RELAY is a quantitative finance firm. Its trading is proprietary: it trades only its own capital and does
+          not accept, manage or invest external or client capital. KSAN RELAY may hold, or may have held, positions in instruments or markets
           discussed in its research, and is not obliged to disclose them.
         </p>
 

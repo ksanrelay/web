@@ -1,6 +1,6 @@
 # KSAN RELAY — website
 
-Static site for KSAN RELAY, an independent quantitative research and proprietary trading firm. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
+Static site for KSAN RELAY, an independent quantitative finance firm that trades only its own capital. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
 
 ## Development
 

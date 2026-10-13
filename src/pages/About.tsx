@@ -5,7 +5,7 @@ import Section from '../components/Section.tsx'
 import { ROUTES } from '../site.ts'
 
 const PROFILE: [term: string, value: string][] = [
-  ['Firm', 'Independent quantitative research and proprietary trading firm'],
+  ['Firm', 'Independent quantitative finance firm'],
   ['Research', 'Quantitative finance, statistics, market behavior, algorithmic systems'],
   ['Publishes', 'Research papers, models, datasets, libraries and research tools'],
   ['Capital', 'Own capital only. No external or client capital'],
@@ -17,7 +17,7 @@ export default function About() {
       meta={ROUTES.about}
       label="ABOUT"
       title="About KSAN RELAY"
-      lead="KSAN RELAY is an independent quantitative research and proprietary trading firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
+      lead="KSAN RELAY is an independent quantitative finance firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
       figure={<DistributionFigure />}
       intro={
         <dl className="kv-table">

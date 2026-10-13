@@ -18,12 +18,12 @@ export interface RouteMeta {
 }
 
 const DEFAULT_DESCRIPTION =
-  'Independent quantitative research and trading firm. KSAN RELAY builds data-driven models, publishes research and open-source tools, and trades its own capital.'
+  'Independent quantitative finance firm. KSAN RELAY builds data-driven models, publishes research and open-source tools, and trades its own capital.'
 
 export const ROUTES = {
   home: {
     path: '/',
-    title: 'KSAN RELAY — Quantitative Research & Trading Firm',
+    title: 'KSAN RELAY — Quantitative Finance Firm',
     description: DEFAULT_DESCRIPTION,
   },
   research: {
@@ -42,7 +42,7 @@ export const ROUTES = {
     path: '/about',
     title: 'About — KSAN RELAY',
     description:
-      'KSAN RELAY is an independent quantitative research and proprietary trading firm. It trades only its own capital and does not manage external or client capital.',
+      'KSAN RELAY is an independent quantitative finance firm. It trades only its own capital and does not manage external or client capital.',
   },
   contact: {
     path: '/contact',
