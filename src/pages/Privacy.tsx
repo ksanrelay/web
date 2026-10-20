@@ -36,7 +36,7 @@ export default function Privacy() {
         </p>
         <h3>Email</h3>
         <p>
-          If you email KSAN RELAY, the information you choose to send — your email address, name, and message — is
+          If you email Ksan Relay, the information you choose to send — your email address, name, and message — is
           used only to read and respond to your message, and is kept only as long as needed for that purpose or as
           required by law.
         </p>

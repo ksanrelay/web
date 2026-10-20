@@ -16,8 +16,8 @@ export default function About() {
     <PageShell
       meta={ROUTES.about}
       label="ABOUT"
-      title="About KSAN RELAY"
-      lead="KSAN RELAY is an independent quantitative finance firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
+      title="About Ksan Relay"
+      lead="Ksan Relay is an independent quantitative finance firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
       figure={<DistributionFigure />}
       intro={
         <dl className="kv-table">
@@ -47,7 +47,7 @@ export default function About() {
         <Section index="02" label="OPERATING MODEL" title="Operating model">
           <div className="prose">
             <p>
-              KSAN RELAY trades only its own capital. It does not manage external capital and does not provide
+              Ksan Relay trades only its own capital. It does not manage external capital and does not provide
               brokerage, investment advisory, portfolio-management, insurance or financial consultancy services.
             </p>
             <p>

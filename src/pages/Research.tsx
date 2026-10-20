@@ -69,7 +69,7 @@ export default function Research() {
           ))}
         </ul>
         <p className="note">
-          Some research stays private while it is developed and validated, and some is used in KSAN RELAY’s own
+          Some research stays private while it is developed and validated, and some is used in Ksan Relay’s own
           trading. Published research is not investment advice.
         </p>
       </Section>

@@ -53,9 +53,9 @@ export default function Footer() {
       <div className="container">
         <div className="footer__top">
           <div className="footer__brand">
-            <Link to="/" className="footer__home" aria-label="KSAN RELAY — home">
+            <Link to="/" className="footer__home" aria-label="Ksan Relay — home">
               <LogoMark className="footer__mark" />
-              <span className="footer__name">KSAN RELAY</span>
+              <span className="footer__name">Ksan Relay</span>
             </Link>
             <p className="footer__descriptor">
               Independent quantitative finance firm.
@@ -80,7 +80,7 @@ export default function Footer() {
 
         <div className="footer__legal">
           <p className="footer__fineprint">
-            KSAN RELAY trades only its own capital. It does not accept, manage or advise on external or client
+            Ksan Relay trades only its own capital. It does not accept, manage or advise on external or client
             capital, and does not provide brokerage, investment advisory, portfolio-management or fund-management
             services. Content on this website is published for informational and research purposes and is not
             investment advice or an offer to buy or sell any security.{' '}
@@ -89,7 +89,7 @@ export default function Footer() {
         </div>
 
         <div className="footer__base">
-          <p>© {YEAR} KSAN RELAY. All rights reserved.</p>
+          <p>© {YEAR} Ksan Relay. All rights reserved.</p>
           <ul className="dot-list tech-label" aria-label="Activities">
             <li>Research</li>
             <li>Open Source</li>

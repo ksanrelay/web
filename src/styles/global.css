@@ -1,4 +1,4 @@
-/* KSAN RELAY — global styles
+/* Ksan Relay — global styles
    Monochrome: pure black background, pure white foreground. Hierarchy comes from size, weight,
    spacing, borders and white-alpha opacity — never from grey colour values.
    All type sizes are fluid (clamp) on a ~1.25 modular scale, so there are no size jumps between breakpoints. */

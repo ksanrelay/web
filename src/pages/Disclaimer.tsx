@@ -23,15 +23,15 @@ export default function Disclaimer() {
 
         <h2>Trading own capital</h2>
         <p>
-          KSAN RELAY is a quantitative finance firm. Its trading is proprietary: it trades only its own capital and does
-          not accept, manage or invest external or client capital. KSAN RELAY may hold, or may have held, positions in instruments or markets
+          Ksan Relay is a quantitative finance firm. Its trading is proprietary: it trades only its own capital and does
+          not accept, manage or invest external or client capital. Ksan Relay may hold, or may have held, positions in instruments or markets
           discussed in its research, and is not obliged to disclose them.
         </p>
 
         <h2>No advisory or client relationship</h2>
         <p>
-          KSAN RELAY does not provide brokerage, investment advisory, portfolio-management, insurance or financial
-          consultancy services. Reading this website, using its content or contacting KSAN RELAY does not create an
+          Ksan Relay does not provide brokerage, investment advisory, portfolio-management, insurance or financial
+          consultancy services. Reading this website, using its content or contacting Ksan Relay does not create an
           advisory, fiduciary or client relationship.
         </p>
 
@@ -51,7 +51,7 @@ export default function Disclaimer() {
 
         <h2 id="open-source">Open-source software, datasets and research outputs</h2>
         <ul>
-          <li>Open-source software released by KSAN RELAY may be experimental and may contain defects.</li>
+          <li>Open-source software released by Ksan Relay may be experimental and may contain defects.</li>
           <li>Datasets may contain errors, omissions or limitations.</li>
           <li>Research outputs may change as work is revised.</li>
           <li>
@@ -62,9 +62,9 @@ export default function Disclaimer() {
 
         <h2>Accuracy and third-party information</h2>
         <p>
-          KSAN RELAY does not represent that content on this website is complete, current or error-free. Content may
+          Ksan Relay does not represent that content on this website is complete, current or error-free. Content may
           be changed or removed without notice. Research may reference third-party data, software or publications;
-          KSAN RELAY does not control third-party content, and a reference is not an endorsement.
+          Ksan Relay does not control third-party content, and a reference is not an endorsement.
         </p>
 
         <p>

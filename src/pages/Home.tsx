@@ -11,13 +11,13 @@ export default function Home() {
         <div className="hero__text">
           <p className="hero__eyebrow">
             <LogoMark className="hero__mark" />
-            KSAN RELAY
+            Ksan Relay
           </p>
           <h1 id="hero-title" className="hero__headline">
             Quantitative Finance Firm
           </h1>
           <p className="hero__lead">
-            KSAN RELAY develops data-driven models and computational methods for financial markets, publishes research
+            Ksan Relay develops data-driven models and computational methods for financial markets, publishes research
             and open-source tools, and applies selected research to trading its own capital.
           </p>
           <p className="hero__note">
@@ -38,7 +38,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="hero__secondary">
-            <Link to={ROUTES.about.path}>About KSAN RELAY</Link>
+            <Link to={ROUTES.about.path}>About Ksan Relay</Link>
           </p>
         </div>
         <EquationAccent />

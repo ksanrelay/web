@@ -40,9 +40,9 @@ export default function Navbar() {
   return (
     <header className="navbar" ref={headerRef}>
       <nav className="navbar__pill" aria-label="Primary">
-        <Link to="/" className="navbar__brand" aria-label="KSAN RELAY — home">
+        <Link to="/" className="navbar__brand" aria-label="Ksan Relay — home">
           <LogoMark className="navbar__mark" />
-          <span className="navbar__wordmark">KSAN RELAY</span>
+          <span className="navbar__wordmark">Ksan Relay</span>
         </Link>
 
         <ul className="navbar__links">

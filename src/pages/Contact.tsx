@@ -57,14 +57,14 @@ export default function Contact() {
           </dl>
           <div className="contact-actions">
             <a className="button button--primary" href={`mailto:${CONTACT.email}`}>
-              Email KSAN RELAY
+              Email Ksan Relay
             </a>
             <ExternalLink href={CONTACT.github} className="button">
               GitHub
             </ExternalLink>
           </div>
           <p className="note">
-            KSAN RELAY does not accept external capital or provide investment advice, and cannot respond to requests
+            Ksan Relay does not accept external capital or provide investment advice, and cannot respond to requests
             for either. Please do not send confidential or sensitive personal information by email.
           </p>
         </>

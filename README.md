@@ -1,6 +1,6 @@
-# KSAN RELAY — website
+# Ksan Relay — website
 
-Static site for KSAN RELAY, an independent quantitative finance firm that trades only its own capital. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
+Static site for Ksan Relay, an independent quantitative finance firm that trades only its own capital. Built with React, Vite, TypeScript and React Router, and deployed to Vercel. It has no backend, no database, no authentication and no analytics.
 
 ## Development
 
@@ -58,7 +58,7 @@ Add entries to `PUBLICATIONS` or `RELEASES` in `src/content/publications.ts`. Th
 
 ## Legal pages
 
-The Disclaimer, Terms of Use and Privacy Policy are **general templates, not legal advice**. Have a qualified lawyer review them before relying on them commercially, and before KSAN RELAY begins any regulated activity (including any applicable Indian/SEBI requirements).
+The Disclaimer, Terms of Use and Privacy Policy are **general templates, not legal advice**. Have a qualified lawyer review them before relying on them commercially, and before Ksan Relay begins any regulated activity (including any applicable Indian/SEBI requirements).
 
 ## Account security
 
@@ -66,4 +66,4 @@ Turn on 2FA (passkeys where possible) for the GitHub and Vercel accounts. Depend
 
 ## Licensing
 
-Website content: © 2026 KSAN RELAY. All rights reserved. Research code and publications are licensed individually, and each one states its own license.
+Website content: © 2026 Ksan Relay. All rights reserved. Research code and publications are licensed individually, and each one states its own license.
