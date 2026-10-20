@@ -18,15 +18,29 @@ const SECURITY_HEADERS = {
  * - set:   canonical + og:url + absolute og:image on every page, robots.txt with Sitemap, sitemap.xml
  * - unset: relative og:image, robots.txt without Sitemap, no sitemap.xml
  * The dev server gets the home page's head tags; production builds leave <!--head--> for
- * scripts/prerender.mjs, which writes per-route tags into each prerendered page.
+ * scripts/prerender.mjs, which writes per-route tags into each prerendered page, and get a font preload.
  */
 function seo(siteUrl: string | undefined): Plugin {
   return {
     name: 'ksan-seo',
     // Only the client build emits robots.txt and sitemap.xml, not the prerender (SSR) build.
     applyToEnvironment: environment => environment.name === 'client',
-    transformIndexHtml(html, ctx) {
-      return ctx.server ? html.replace('<!--head-->', headTags(ROUTES.home, siteUrl)) : html
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        if (ctx.server) return html.replace('<!--head-->', headTags(ROUTES.home, siteUrl))
+        // Preload the Latin Geist file: it sets the hero headline (the LCP element), so fetch it before the CSS
+        // that references it has been parsed. `crossorigin` is required for font preloads, even same-origin.
+        const fonts = Object.keys(ctx.bundle ?? {}).filter(file => /\/geist-latin-wght-normal-[\w-]+\.woff2$/.test(file))
+        return {
+          html,
+          tags: fonts.map(file => ({
+            tag: 'link',
+            attrs: { rel: 'preload', href: `/${file}`, as: 'font', type: 'font/woff2', crossorigin: '' },
+            injectTo: 'head' as const,
+          })),
+        }
+      },
     },
     generateBundle() {
       const robots = ['User-agent: *', 'Allow: /']

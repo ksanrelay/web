@@ -1,4 +1,3 @@
-import { Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import LogoMark from './LogoMark.tsx'
@@ -49,7 +48,13 @@ export default function Navbar() {
           {NAV_ITEMS.map(item => (
             <li key={item.label}>
               <NavLink to={item.to} className="navbar__link">
-                {item.label}
+                {({ isActive }) => (
+                  <>
+                    {/* A separate element so a page transition can slide the highlight without moving the label. */}
+                    {isActive && <span className="navbar__indicator" aria-hidden="true" />}
+                    {item.label}
+                  </>
+                )}
               </NavLink>
             </li>
           ))}
@@ -64,7 +69,10 @@ export default function Navbar() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           onClick={() => setOpenOn(open ? null : pathname)}
         >
-          {open ? <X size={18} strokeWidth={1.75} aria-hidden="true" /> : <Menu size={18} strokeWidth={1.75} aria-hidden="true" />}
+          <span className="navbar__toggle-icon" aria-hidden="true">
+            <span />
+            <span />
+          </span>
         </button>
       </nav>
 

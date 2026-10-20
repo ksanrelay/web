@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import ExternalLink from '../components/ExternalLink.tsx'
 import AutocorrelationFigure from '../components/figures/AutocorrelationFigure.tsx'
 import PageShell from '../components/PageShell.tsx'
@@ -16,11 +17,32 @@ const AREAS: [area: string, scope: string][] = [
 
 const FORMATS = ['Papers', 'Preprints', 'Technical reports', 'Research notes', 'Experiments', 'Methodology', 'Market studies']
 
-const PRINCIPLES = [
-  ['Testable claims', 'A hypothesis is only as good as the test that could have rejected it.'],
-  ['Explicit assumptions', 'Each model states what it assumes about data, costs and the process that generated them.'],
-  ['Reproducible results', 'Results are tied to versioned code, fixed data snapshots and recorded parameters.'],
-  ['Out-of-sample validation', 'Conclusions follow out-of-sample tests, multiple-comparison control and honest error bars.'],
+const PRINCIPLES: { key: string; title: ReactNode; body: string }[] = [
+  {
+    key: 'testable',
+    title: 'Testable claims',
+    body: 'A hypothesis is only as good as the test that could have rejected it.',
+  },
+  {
+    key: 'assumptions',
+    title: 'Explicit assumptions',
+    body: 'Each model states what it assumes about data, costs and the process that generated them.',
+  },
+  {
+    key: 'reproducible',
+    title: 'Reproducible results',
+    body: 'Results are tied to versioned code, fixed data snapshots and recorded parameters.',
+  },
+  {
+    key: 'out-of-sample',
+    // Keep the compound together: narrow columns otherwise break it as "Out-of- / sample".
+    title: (
+      <>
+        <span className="nowrap">Out-of-sample</span> validation
+      </>
+    ),
+    body: 'Conclusions follow out-of-sample tests, multiple-comparison control and honest error bars.',
+  },
 ]
 
 export default function Research() {
@@ -28,7 +50,6 @@ export default function Research() {
   return (
     <PageShell
       meta={ROUTES.research}
-      label="RESEARCH"
       title="Research"
       lead="We study financial markets with quantitative, statistical and computational methods, and publish selected work with the code and data needed to check it."
       figure={<AutocorrelationFigure />}
@@ -43,28 +64,32 @@ export default function Research() {
         </dl>
       }
     >
-      <Section index="01" label="PUBLICATIONS" title="Publications">
+      <Section label="Publications" title="Publications">
         <PublicationList
           items={publications}
-          empty={
-            <>
-              No publications yet. New work will be listed here with its date, authors, abstract and links, and code
-              will be released on <ExternalLink href={CONTACT.github}>GitHub</ExternalLink>.
-            </>
+          empty="No publications yet. New work will be listed here with its date, authors, abstract and links, and code will be released on GitHub."
+          emptyAction={
+            <ExternalLink href={CONTACT.github} className="button">
+              GitHub
+            </ExternalLink>
           }
         />
-        <p className="formats">
+        <div className="formats">
           <span className="tech-label">Formats</span>
-          <span>{FORMATS.join(' · ')}</span>
-        </p>
+          <ul className="dot-list" aria-label="Formats">
+            {FORMATS.map(format => (
+              <li key={format}>{format}</li>
+            ))}
+          </ul>
+        </div>
       </Section>
 
-      <Section index="02" label="METHOD" title="How the research is done">
+      <Section label="Method" title="How the research is done">
         <ul className="principles">
-          {PRINCIPLES.map(([title, body]) => (
-            <li key={title} className="principles__item">
-              <h3 className="principles__title">{title}</h3>
-              <p className="principles__body">{body}</p>
+          {PRINCIPLES.map(p => (
+            <li key={p.key} className="principles__item">
+              <h3 className="principles__title">{p.title}</h3>
+              <p className="principles__body">{p.body}</p>
             </li>
           ))}
         </ul>

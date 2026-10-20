@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { formatDate, type Publication } from '../content/publications.ts'
+import EmptyEntry from './EmptyEntry.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import TechnicalLabel from './TechnicalLabel.tsx'
 
@@ -7,12 +8,14 @@ interface PublicationListProps {
   items: Publication[]
   /** Shown instead of the list when there are no items. */
   empty: ReactNode
+  /** Action shown under the empty message, e.g. a link to GitHub. */
+  emptyAction?: ReactNode
   /** Hide abstracts for a compact listing. */
   compact?: boolean
 }
 
-export default function PublicationList({ items, empty, compact }: PublicationListProps) {
-  if (items.length === 0) return <p className="entry-empty">{empty}</p>
+export default function PublicationList({ items, empty, emptyAction, compact }: PublicationListProps) {
+  if (items.length === 0) return <EmptyEntry action={emptyAction}>{empty}</EmptyEntry>
   return (
     <ol className="entry-list">
       {items.map(p => (

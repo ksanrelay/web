@@ -1,5 +1,6 @@
-import FigureFrame from './FigureFrame.tsx'
+import FigureFrame, { type PlotCursor } from './FigureFrame.tsx'
 import { mulberry32, normalSampler, toPath } from './random.ts'
+import { once } from './util.ts'
 
 // Signal recovery: two sinusoids buried in Gaussian noise (top) and the periodogram that recovers
 // their frequencies (bottom). The periodogram is computed from the plotted series.
@@ -18,41 +19,54 @@ const BOTTOM_H = 132
 const H = BOTTOM_Y + BOTTOM_H
 const HALF = N / 2
 
-const SERIES = (() => {
+const fx = (f: number) => (f / HALF) * W
+
+const data = once(() => {
   const z = normalSampler(mulberry32(37))
-  return Array.from(
+  const series = Array.from(
     { length: N },
     (_, t) => A1 * Math.sin((2 * Math.PI * F1 * t) / N) + A2 * Math.sin((2 * Math.PI * F2 * t) / N + 0.8) + NOISE * z(),
   )
-})()
 
-/** Periodogram S(f) = |Σ xₜ e^(−2πift/n)|² / n for f = 1 … n/2 (direct DFT; n is small). */
-const SPECTRUM = (() => {
-  const mean = SERIES.reduce((a, b) => a + b, 0) / N
-  return Array.from({ length: HALF }, (_, i) => {
+  // Periodogram S(f) = |Σ xₜ e^(−2πift/n)|² / n for f = 1 … n/2 (direct DFT; n is small).
+  const mean = series.reduce((a, b) => a + b, 0) / N
+  const spectrum = Array.from({ length: HALF }, (_, i) => {
     const f = i + 1
     let re = 0
     let im = 0
     for (let t = 0; t < N; t++) {
       const angle = (2 * Math.PI * f * t) / N
-      re += (SERIES[t] - mean) * Math.cos(angle)
-      im -= (SERIES[t] - mean) * Math.sin(angle)
+      re += (series[t] - mean) * Math.cos(angle)
+      im -= (series[t] - mean) * Math.sin(angle)
     }
     return { f, power: (re * re + im * im) / N }
   })
-})()
 
-const PEAK = Math.max(...SPECTRUM.map(s => s.power))
-const NOISE_FLOOR = SPECTRUM.map(s => s.power).sort((a, b) => a - b)[Math.floor(HALF / 2)] // median
-const TOP_TWO = [...SPECTRUM].sort((a, b) => b.power - a.power).slice(0, 2)
-const SNR_DB = 10 * Math.log10(PEAK / NOISE_FLOOR)
+  const peak = Math.max(...spectrum.map(s => s.power))
+  const floor = spectrum.map(s => s.power).sort((a, b) => a - b)[Math.floor(HALF / 2)] // median
+  const sy = (p: number) => BOTTOM_Y + BOTTOM_H - (p / peak) * (BOTTOM_H - 10)
+  const amp = Math.max(...series.map(Math.abs))
 
-const amp = Math.max(...SERIES.map(Math.abs))
-const SIGNAL_PATH = toPath(SERIES.map((v, t) => [(t / (N - 1)) * W, TOP_H / 2 - (v / amp) * (TOP_H / 2 - 4)]))
-const fx = (f: number) => (f / HALF) * W
-const sy = (p: number) => BOTTOM_Y + BOTTOM_H - (p / PEAK) * (BOTTOM_H - 10)
+  const cursor: PlotCursor = {
+    xs: spectrum.map(s => fx(s.f)),
+    ys: spectrum.map(s => sy(s.power)),
+    top: BOTTOM_Y,
+    bottom: BOTTOM_Y + BOTTOM_H,
+    read: i => `f = ${spectrum[i].f}  S(f) ${spectrum[i].power.toFixed(2)}`,
+  }
+  return {
+    spectrum,
+    floor,
+    sy,
+    topTwo: [...spectrum].sort((a, b) => b.power - a.power).slice(0, 2),
+    snrDb: 10 * Math.log10(peak / floor),
+    signalPath: toPath(series.map((v, t) => [(t / (N - 1)) * W, TOP_H / 2 - (v / amp) * (TOP_H / 2 - 4)])),
+    cursor,
+  }
+})
 
 export default function SpectrumFigure() {
+  const { spectrum, floor, sy, topTwo, snrDb, signalPath, cursor } = data()
   return (
     <FigureFrame
       index="Fig. 4"
@@ -62,10 +76,11 @@ export default function SpectrumFigure() {
       notation={[
         ['Signal', 'xₜ = Σⱼ Aⱼ sin(2πfⱼt/n) + εₜ'],
         ['Power', 'S(f) = |Σₜ xₜ e^(−2πift/n)|² / n'],
-        ['Peaks', `f = ${TOP_TWO.map(p => p.f).sort((a, b) => a - b).join(', ')}; ${SNR_DB.toFixed(1)} dB above median`],
-        ['Floor', `median S(f) = ${NOISE_FLOOR.toFixed(2)}`],
+        ['Peaks', `f = ${topTwo.map(p => p.f).sort((a, b) => a - b).join(', ')}; ${snrDb.toFixed(1)} dB above median`],
+        ['Floor', `median S(f) = ${floor.toFixed(2)}`],
       ]}
       source={`Simulated, n = ${N}, two tones plus Gaussian noise (σ = ${NOISE}). Illustrative only.`}
+      cursor={cursor}
     >
       <g className="plot__grid">
         {[0.25, 0.5, 0.75].map(f => (
@@ -76,13 +91,13 @@ export default function SpectrumFigure() {
         ))}
       </g>
       <line className="plot__axis plot__axis--mean" x1={0} y1={TOP_H / 2} x2={W} y2={TOP_H / 2} />
-      <path className="plot__path plot__path--thin" d={SIGNAL_PATH} pathLength={1} />
+      <path className="plot__path plot__path--thin" d={signalPath} pathLength={1} />
 
       <line className="plot__axis" x1={0} y1={BOTTOM_Y + BOTTOM_H} x2={W} y2={BOTTOM_Y + BOTTOM_H} />
-      <line className="plot__envelope" x1={0} y1={sy(NOISE_FLOOR)} x2={W} y2={sy(NOISE_FLOOR)} />
+      <line className="plot__envelope" x1={0} y1={sy(floor)} x2={W} y2={sy(floor)} />
       <g className="plot__stems">
-        {SPECTRUM.map(s => {
-          const strong = TOP_TWO.includes(s)
+        {spectrum.map(s => {
+          const strong = topTwo.includes(s)
           return (
             <g key={s.f} className={strong ? 'plot__stem plot__stem--strong' : 'plot__stem'}>
               <line x1={fx(s.f)} y1={BOTTOM_Y + BOTTOM_H} x2={fx(s.f)} y2={sy(s.power)} />
@@ -91,7 +106,7 @@ export default function SpectrumFigure() {
           )
         })}
       </g>
-      {TOP_TWO.map(p => (
+      {topTwo.map(p => (
         <text key={p.f} className="plot__text plot__text--label" x={fx(p.f) + 8} y={sy(p.power) + 4}>
           f = {p.f}
         </text>
@@ -107,7 +122,7 @@ export default function SpectrumFigure() {
           {f}
         </text>
       ))}
-      <text className="plot__text" x={W} y={sy(NOISE_FLOOR) - 6} textAnchor="end">
+      <text className="plot__text" x={W} y={sy(floor) - 6} textAnchor="end">
         median
       </text>
     </FigureFrame>

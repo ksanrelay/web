@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import CopyButton from '../components/CopyButton.tsx'
 import ExternalLink from '../components/ExternalLink.tsx'
 import SpectrumFigure from '../components/figures/SpectrumFigure.tsx'
 import PageShell from '../components/PageShell.tsx'
@@ -23,7 +24,6 @@ export default function Contact() {
   return (
     <PageShell
       meta={ROUTES.contact}
-      label="CONTACT"
       title="Contact"
       lead="For research correspondence and questions about publications or open-source releases."
       figure={<SpectrumFigure />}
@@ -32,15 +32,16 @@ export default function Contact() {
           <dl className="card contact-table">
             <div className="contact-table__row">
               <dt>
-                <TechnicalLabel>EMAIL</TechnicalLabel>
+                <TechnicalLabel>Email</TechnicalLabel>
               </dt>
-              <dd>
+              <dd className="contact-table__value">
                 <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+                <CopyButton text={CONTACT.email} what="email address" />
               </dd>
             </div>
             <div className="contact-table__row">
               <dt>
-                <TechnicalLabel>GITHUB</TechnicalLabel>
+                <TechnicalLabel>GitHub</TechnicalLabel>
               </dt>
               <dd>
                 <ExternalLink href={CONTACT.github}>{display(CONTACT.github)}</ExternalLink>
@@ -48,7 +49,7 @@ export default function Contact() {
             </div>
             <div className="contact-table__row">
               <dt>
-                <TechnicalLabel>LINKEDIN</TechnicalLabel>
+                <TechnicalLabel>LinkedIn</TechnicalLabel>
               </dt>
               <dd>
                 <ExternalLink href={CONTACT.linkedin}>{display(CONTACT.linkedin)}</ExternalLink>

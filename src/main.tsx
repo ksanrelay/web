@@ -6,6 +6,9 @@ import '@fontsource-variable/jetbrains-mono/wght.css'
 import './styles/global.css'
 import App from './App.tsx'
 
+// The app restores scroll itself on Back/Forward (see ScrollManager in App.tsx).
+history.scrollRestoration = 'manual'
+
 const root = document.getElementById('root')!
 const app = (
   <StrictMode>

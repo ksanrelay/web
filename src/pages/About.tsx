@@ -15,7 +15,6 @@ export default function About() {
   return (
     <PageShell
       meta={ROUTES.about}
-      label="ABOUT"
       title="About Ksan Relay"
       lead="Ksan Relay is an independent quantitative finance firm. We develop statistical, computational and algorithmic methods for financial markets, publish selected research and open-source work, and apply selected research to trading our own capital."
       figure={<DistributionFigure />}
@@ -31,7 +30,7 @@ export default function About() {
       }
     >
       <div className="section-pair">
-        <Section index="01" label="APPROACH" title="Approach">
+        <Section label="Approach" title="Approach">
           <div className="prose">
             <p>
               We treat markets as a measurement problem. Questions are framed as testable hypotheses, studied with
@@ -44,7 +43,7 @@ export default function About() {
           </div>
         </Section>
 
-        <Section index="02" label="OPERATING MODEL" title="Operating model">
+        <Section label="Operating model" title="Operating model">
           <div className="prose">
             <p>
               Ksan Relay trades only its own capital. It does not manage external capital and does not provide

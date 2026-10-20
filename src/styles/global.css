@@ -1,7 +1,29 @@
 /* Ksan Relay — global styles
    Monochrome: pure black background, pure white foreground. Hierarchy comes from size, weight,
    spacing, borders and white-alpha opacity — never from grey colour values.
-   All type sizes are fluid (clamp) on a ~1.25 modular scale, so there are no size jumps between breakpoints. */
+   All type sizes are fluid (clamp) on a ~1.25 modular scale, so there are no size jumps between breakpoints.
+   Motion: transform and opacity only, and only in response to the reader (navigating, hovering a plot,
+   opening the menu). The one exception is the figure's path draw on load. */
+
+/* Metric-matched fallbacks: text set in Arial / Courier New occupies the same space as Geist /
+   JetBrains Mono, so the swap to the web font does not shift the layout. Values from @capsizecss/metrics. */
+@font-face {
+  font-family: 'Geist Fallback';
+  src: local('Arial'), local('ArialMT');
+  ascent-override: 95.9379%;
+  descent-override: 28.1609%;
+  line-gap-override: 0%;
+  size-adjust: 104.7553%;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Fallback';
+  src: local('Courier New'), local('CourierNewPSMT');
+  ascent-override: 102.0166%;
+  descent-override: 30.0049%;
+  line-gap-override: 0%;
+  size-adjust: 99.9837%;
+}
 
 :root {
   /* Colour */
@@ -13,11 +35,10 @@
   --line-2: rgba(255, 255, 255, 0.24);
   --line-3: rgba(255, 255, 255, 0.45);
   --glow: 0 0 18px rgba(255, 255, 255, 0.06);
-  --glow-hover: 0 0 28px rgba(255, 255, 255, 0.11);
 
   /* Type */
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --font-sans: 'Geist Variable', 'Geist Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono Fallback', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   --step--2: clamp(0.75rem, 0.73rem + 0.1vw, 0.8125rem); /* 12 → 13  mono labels */
   --step--1: clamp(0.875rem, 0.85rem + 0.12vw, 0.9375rem); /* 14 → 15  small print */
   --step-0: clamp(1.0625rem, 1.01rem + 0.25vw, 1.1875rem); /* 17 → 19  body */
@@ -32,10 +53,16 @@
   --gutter: clamp(20px, 4vw, 40px);
   --pad-l: max(var(--gutter), env(safe-area-inset-left));
   --pad-r: max(var(--gutter), env(safe-area-inset-right));
-  --section-space: clamp(72px, 9vw, 128px);
-  --radius: 8px;
+  --section-space: clamp(56px, 6vw, 96px);
   --nav-h: 56px;
+  --nav-top: max(16px, env(safe-area-inset-top));
   --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Radii. Nested shapes follow inner = outer − padding (panel 24 − 8 = item 16). */
+  --r-card: 8px;
+  --r-item: 16px;
+  --r-panel: 24px;
+  --r-pill: 999px;
 
   color-scheme: dark;
 }
@@ -58,6 +85,17 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  /* Reserve the scrollbar's space on every page, so the centred navbar does not shift sideways between
+     short and long pages on systems with classic scrollbars. */
+  scrollbar-gutter: stable;
+  scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+}
+
+/* In-page anchors glide; route changes set scroll with behavior: 'instant' (see App.tsx). */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -132,6 +170,11 @@ svg {
   border-radius: 4px;
 }
 
+/* Anchor targets land below the fixed navbar. */
+[id] {
+  scroll-margin-top: calc(var(--nav-h) + var(--nav-top) + 24px);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -167,12 +210,41 @@ svg {
   color: var(--bg);
   font-size: var(--step--1);
   font-weight: 500;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   transform: translateY(-200%);
 }
 
 .skip-link:focus-visible {
   transform: none;
+}
+
+/* ---------- Page transitions ----------
+   React's <ViewTransition> (App.tsx) tags the outgoing page "page-exit" and the incoming one "page-enter".
+   Kept under 200 ms: the page ignores pointer input while a transition runs. */
+
+::view-transition-group(root) {
+  animation-duration: 180ms;
+}
+
+::view-transition-old(.page-exit) {
+  animation: 120ms var(--ease) both vt-fade-out;
+}
+
+::view-transition-new(.page-enter) {
+  animation: 180ms var(--ease) 40ms both vt-fade-in;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 /* ---------- Fixed background layers ---------- */
@@ -199,7 +271,7 @@ svg {
 
 .main {
   flex: 1;
-  padding-top: calc(var(--nav-h) + max(16px, env(safe-area-inset-top)) + clamp(36px, 4.5vw, 64px));
+  padding-top: calc(var(--nav-h) + var(--nav-top) + clamp(36px, 4.5vw, 64px));
   outline: none;
 }
 
@@ -223,7 +295,23 @@ svg {
   color: var(--fg-3);
 }
 
-/* ---------- Links & buttons ---------- */
+/* ---------- Links & buttons ----------
+   Two link styles only. Inline links (below) are underlined; navigation links (navbar, footer) are not
+   and change colour on hover. */
+
+.prose a,
+.hero__note a,
+.entry__links a,
+.footer__fineprint a,
+.note a,
+.contact-table__row a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--line-3);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-color 150ms var(--ease);
+}
 
 .external-link {
   display: inline-flex;
@@ -247,13 +335,16 @@ svg {
   min-height: 48px;
   padding: 0 24px;
   border: 1px solid var(--line-2);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: var(--bg);
   font-size: var(--step-0);
   font-weight: 500;
   line-height: 1;
   white-space: nowrap;
-  transition: background-color 150ms var(--ease), border-color 150ms var(--ease), box-shadow 150ms var(--ease);
+  transition:
+    background-color 150ms var(--ease),
+    border-color 150ms var(--ease),
+    transform 120ms var(--ease);
 }
 
 .button--primary {
@@ -268,6 +359,15 @@ svg {
 
 /* Hover styles only where a real pointer can hover, so taps on touch screens do not leave sticky states. */
 @media (hover: hover) {
+  .prose a:hover,
+  .hero__note a:hover,
+  .entry__links a:hover,
+  .footer__fineprint a:hover,
+  .note a:hover,
+  .contact-table__row a:hover {
+    text-decoration-color: var(--fg);
+  }
+
   .external-link:hover .external-link__icon {
     opacity: 1;
     transform: translate(1px, -1px);
@@ -281,19 +381,18 @@ svg {
   .button--primary:hover {
     background: rgba(255, 255, 255, 0.88);
     border-color: rgba(255, 255, 255, 0.88);
-    box-shadow: var(--glow-hover);
   }
 }
 
 .button:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
 }
 
 /* ---------- Navbar ---------- */
 
 .navbar {
   position: fixed;
-  top: max(16px, env(safe-area-inset-top));
+  top: var(--nav-top);
   left: 0;
   right: 0;
   z-index: 50;
@@ -310,8 +409,8 @@ svg {
 .mobile-nav {
   pointer-events: auto;
   background: rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(20px) saturate(140%);
-  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
     0 0 28px rgba(255, 255, 255, 0.05),
@@ -319,12 +418,42 @@ svg {
 }
 
 .navbar__pill {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   height: var(--nav-h);
   padding: 6px 6px 6px 20px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
+}
+
+/* The pill starts light over the empty top of the page and turns denser once content scrolls under it.
+   Scroll-driven, on the opacity of one layer, so the compositor runs it; other browsers keep the static style. */
+@supports (animation-timeline: scroll()) {
+  .navbar__pill {
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  .navbar__pill::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(0, 0, 0, 0.5);
+    animation: nav-solid linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120px;
+  }
+
+  @keyframes nav-solid {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 .navbar__brand {
@@ -341,12 +470,16 @@ svg {
   flex: none;
 }
 
-.navbar__wordmark {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+.navbar__wordmark,
+.footer__name {
+  font-family: var(--font-sans);
+  font-weight: 550;
+  letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+.navbar__wordmark {
+  font-size: 0.9375rem;
 }
 
 .navbar__links {
@@ -358,11 +491,13 @@ svg {
 }
 
 .navbar__link {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   height: 42px;
   padding: 0 16px;
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   font-size: 0.9375rem;
   white-space: nowrap;
   color: var(--fg-2);
@@ -371,7 +506,21 @@ svg {
 
 .navbar__link.active {
   color: var(--fg);
+}
+
+/* Active highlight. Its own view-transition name lets a page change slide it from the old link to the new one. */
+.navbar__indicator {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background: rgba(255, 255, 255, 0.11);
+  view-transition-name: nav-indicator;
+}
+
+::view-transition-group(nav-indicator) {
+  animation-duration: 220ms;
+  animation-timing-function: var(--ease);
 }
 
 .navbar__toggle {
@@ -382,10 +531,45 @@ svg {
   height: 44px;
   flex: none;
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--r-pill);
   background: transparent;
   cursor: pointer;
   transition: background-color 150ms var(--ease);
+}
+
+/* Two bars that rotate into a cross. Driven by aria-expanded, so the icon cannot disagree with the state. */
+.navbar__toggle-icon {
+  position: relative;
+  width: 16px;
+  height: 12px;
+}
+
+.navbar__toggle-icon span {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 160ms var(--ease);
+}
+
+.navbar__toggle-icon span:first-child {
+  transform: translateY(-3.5px);
+}
+
+.navbar__toggle-icon span:last-child {
+  transform: translateY(3.5px);
+}
+
+.navbar__toggle[aria-expanded='true'] .navbar__toggle-icon span:first-child {
+  transform: rotate(45deg);
+}
+
+.navbar__toggle[aria-expanded='true'] .navbar__toggle-icon span:last-child {
+  transform: rotate(-45deg);
 }
 
 @media (hover: hover) {
@@ -403,9 +587,14 @@ svg {
   /* Denser than the pill: the panel sits over body text and must stay legible. */
   background: rgba(0, 0, 0, 0.82);
   width: min(100%, 420px);
-  border-radius: 24px;
+  border-radius: var(--r-panel);
   padding: 8px;
-  transition: opacity 160ms var(--ease), transform 160ms var(--ease);
+  transform-origin: top center;
+  /* allow-discrete keeps the panel visible while it fades out, then applies display: none. */
+  transition:
+    opacity 160ms var(--ease),
+    transform 160ms var(--ease),
+    display 160ms allow-discrete;
 }
 
 @starting-style {
@@ -417,6 +606,8 @@ svg {
 
 .mobile-nav[hidden] {
   display: none;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
 }
 
 .mobile-nav__list li + li {
@@ -428,7 +619,7 @@ svg {
   align-items: center;
   min-height: 56px;
   padding: 0 18px;
-  border-radius: 16px;
+  border-radius: var(--r-item);
   font-size: 1.125rem;
 }
 
@@ -446,7 +637,7 @@ svg {
   position: relative;
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-card);
   box-shadow: var(--glow);
 }
 
@@ -456,25 +647,13 @@ svg {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
   gap: clamp(40px, 5vw, 80px);
-  align-items: center;
-  padding-bottom: var(--section-space);
+  align-items: start;
+  padding-bottom: clamp(72px, 9vw, 128px);
 }
 
-.hero__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: clamp(20px, 2.4vw, 32px);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  font-weight: 500;
-  letter-spacing: 0.22em;
-}
-
-.hero__mark {
-  width: 28px;
-  height: 28px;
-  flex: none;
+/* Headline cap height lines up with the top edge of the figure card, as on inner pages. */
+.hero__text {
+  padding-top: clamp(4px, 1vw, 12px);
 }
 
 .hero__headline {
@@ -493,21 +672,19 @@ svg {
   color: var(--fg-2);
 }
 
-.hero__note {
-  max-width: 34em;
-  margin-top: 16px;
-  padding-left: 14px;
-  border-left: 2px solid var(--fg);
-  font-size: var(--step-0);
-  line-height: 1.5;
-  color: var(--fg);
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(32px, 4vw, 44px);
 }
 
-.hero__note a {
+.hero__note {
+  max-width: 34em;
+  margin-top: 20px;
+  font-size: var(--step--1);
+  line-height: 1.6;
   color: var(--fg-3);
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-underline-offset: 0.2em;
 }
 
 /* Dot-separated inline list. Every item carries a leading separator; the list is pulled left by one
@@ -532,45 +709,59 @@ svg {
   text-align: center;
 }
 
-.hero__meta {
-  margin-top: 20px;
+/* ---------- Home index ---------- */
+
+.home-index {
+  border-top: 1px solid var(--line);
+}
+
+.home-index li {
+  border-bottom: 1px solid var(--line);
+}
+
+/* Whole row is the link. The hover fill extends 16px past the text on each side, so the text stays on the grid. */
+.home-index__link {
+  display: grid;
+  grid-template-columns: minmax(0, 14em) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 6px 32px;
+  margin-inline: -16px;
+  padding: clamp(22px, 2.6vw, 32px) 16px;
+  border-radius: var(--r-card);
+  transition: background-color 150ms var(--ease);
+}
+
+.home-index__title {
+  font-size: var(--step-2);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  transition: transform 150ms var(--ease);
+}
+
+.home-index__text {
+  max-width: 40em;
+  line-height: 1.6;
   color: var(--fg-2);
-}
-
-.hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: clamp(32px, 4vw, 44px);
-}
-
-.hero__secondary {
-  margin-top: 16px;
-  font-size: var(--step-0);
-  color: var(--fg-2);
-}
-
-.hero__secondary a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-underline-offset: 0.2em;
 }
 
 @media (hover: hover) {
-  .hero__secondary a:hover {
-    color: var(--fg);
+  .home-index__link:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .home-index__link:hover .home-index__title {
+    transform: translateX(4px);
   }
 }
 
-/* Hero figure — the one expressive element on the page. */
+/* ---------- Figures ----------
+   The one expressive element on each page. */
 
 .figure {
   padding: clamp(16px, 2vw, 24px);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-card);
   background: var(--bg);
   box-shadow: var(--glow);
 }
@@ -581,6 +772,39 @@ svg {
   gap: 16px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
+}
+
+/* The hover readout sits over the title. It is absolutely positioned, so changing its text never
+   reflows the card. */
+.figure__head-end {
+  position: relative;
+  display: flex;
+}
+
+.figure__title,
+.figure__readout {
+  transition: opacity 120ms var(--ease);
+}
+
+.figure__readout {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: var(--step--2);
+  line-height: 1.4;
+  white-space: pre; /* keep the double spaces between readout fields */
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.figure[data-cursor] .figure__title {
+  opacity: 0;
+}
+
+.figure[data-cursor] .figure__readout {
+  opacity: 1;
 }
 
 .figure__plot {
@@ -688,13 +912,26 @@ svg {
   stroke-dasharray: 1 3;
 }
 
-.figure__source {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-  font-size: var(--step--2);
-  line-height: 1.5;
-  color: var(--fg-3);
+/* Hover crosshair; positioned from FigureFrame with SVG transforms. */
+.plot__cursor {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms var(--ease);
+}
+
+.figure[data-cursor] .plot__cursor {
+  opacity: 1;
+}
+
+.plot__cursor line {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1;
+}
+
+.plot__cursor circle {
+  fill: var(--bg);
+  stroke: var(--fg);
+  stroke-width: 1.5;
 }
 
 .figure__notation {
@@ -720,6 +957,104 @@ svg {
   overflow-wrap: anywhere;
 }
 
+/* Phones fold the notation table into a disclosure (see FigureFrame). */
+.figure__notation-narrow {
+  display: none;
+}
+
+.figure__summary,
+.legal-toc-compact__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 48px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.figure__summary {
+  border-top: 1px solid var(--line);
+}
+
+.figure__summary::-webkit-details-marker,
+.legal-toc-compact__summary::-webkit-details-marker {
+  display: none;
+}
+
+.figure__summary::after,
+.legal-toc-compact__summary::after {
+  content: '+';
+  font-family: var(--font-mono);
+  color: var(--fg-3);
+}
+
+.figure__notation-narrow[open] .figure__summary::after,
+.legal-toc-compact[open] .legal-toc-compact__summary::after {
+  content: '−';
+}
+
+.figure__source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: var(--step--2);
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+
+/* Small pill control: figure actions and the copy button. */
+.figure__action,
+.copy-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-pill);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: var(--step--2);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--fg-2);
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    border-color 150ms var(--ease),
+    background-color 150ms var(--ease),
+    transform 120ms var(--ease);
+}
+
+.copy-button[hidden] {
+  display: none;
+}
+
+.copy-button[data-copied] {
+  color: var(--fg);
+  border-color: var(--line-3);
+}
+
+@media (hover: hover) {
+  .figure__action:hover,
+  .copy-button:hover {
+    color: var(--fg);
+    border-color: var(--line-3);
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.figure__action:active,
+.copy-button:active {
+  transform: scale(0.97);
+}
+
 /* ---------- Sections ---------- */
 
 .section {
@@ -727,20 +1062,9 @@ svg {
   border-top: 1px solid var(--line);
 }
 
-.section__header {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px 24px;
-  margin-bottom: 20px;
-}
-
-.section__index {
-  color: var(--fg);
-}
-
 .section__title {
   max-width: 18em;
-  margin-bottom: clamp(32px, 4vw, 56px);
+  margin-bottom: clamp(24px, 3vw, 40px);
   font-size: var(--step-3);
   font-weight: 500;
   line-height: 1.05;
@@ -796,6 +1120,7 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  font-variant-numeric: tabular-nums;
 }
 
 .entry__title {
@@ -827,24 +1152,24 @@ svg {
 
 .entry__links a {
   min-height: 44px;
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-underline-offset: 0.2em;
 }
 
-.entry-empty {
-  max-width: 40em;
-  padding-block: 24px;
-  border-block: 1px solid var(--line);
-  line-height: 1.6;
-  color: var(--fg-2);
+/* Empty list: one placeholder row in the entry grid, with dashed rules so it does not read as data. */
+.entry--placeholder {
+  align-items: baseline;
+  border-top: 1px dashed var(--line-2);
+  border-bottom: 1px dashed var(--line-2);
 }
 
-.entry-empty a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-underline-offset: 0.2em;
+.entry--placeholder .entry__text {
+  margin-top: 0;
+}
+
+.entry__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 .formats {
@@ -857,9 +1182,19 @@ svg {
   color: var(--fg-2);
 }
 
-/* Term / description table */
+.formats .dot-list {
+  --sep: 1.2em;
+  flex: 1 1 20em;
+  min-width: 0;
+}
+
+/* Term / description table. Rows share one column grid (subgrid), so the term column fits the
+   longest term instead of wrapping it. */
 
 .kv-table {
+  display: grid;
+  grid-template-columns: minmax(8em, max-content) minmax(0, 1fr);
+  column-gap: 32px;
   border-top: 1px solid var(--line);
 }
 
@@ -868,10 +1203,11 @@ svg {
 }
 
 .kv-table__row {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: 10em minmax(0, 1fr);
+  grid-template-columns: subgrid;
   align-items: baseline;
-  gap: 4px 20px;
+  row-gap: 4px;
   padding-block: 14px;
   border-bottom: 1px solid var(--line);
 }
@@ -911,6 +1247,7 @@ svg {
   text-decoration: underline;
   text-decoration-color: var(--line-3);
   text-underline-offset: 0.2em;
+  transition: text-decoration-color 150ms var(--ease);
 }
 
 .policy-list__summary {
@@ -940,6 +1277,7 @@ svg {
 .page__header-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 24px;
   padding-bottom: 20px;
   margin-bottom: clamp(28px, 4vw, 48px);
@@ -952,11 +1290,34 @@ svg {
   letter-spacing: 0;
 }
 
+.page__crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  margin-block: -6px;
+  transition: color 150ms var(--ease);
+}
+
+.page__crumb svg {
+  margin-left: -3px;
+}
+
+@media (hover: hover) {
+  .page__crumb:hover {
+    color: var(--fg);
+  }
+}
+
 .page__title {
   font-size: var(--step-4);
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.045em;
+}
+
+.page__byline {
+  margin-top: clamp(16px, 2vw, 24px);
 }
 
 .page__intro {
@@ -970,7 +1331,6 @@ svg {
 .page__intro-text {
   padding-top: clamp(4px, 1vw, 12px);
 }
-
 
 .page__intro-text > .card {
   margin-top: clamp(28px, 3.4vw, 40px);
@@ -1002,7 +1362,8 @@ svg {
   font-size: var(--step-0);
 }
 
-.prose > * + * {
+.prose > * + *,
+.prose section > * + * {
   margin-top: 1em;
 }
 
@@ -1010,21 +1371,6 @@ svg {
 .prose li {
   line-height: 1.7;
   color: var(--fg-2);
-}
-
-.prose a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color 150ms var(--ease);
-}
-
-@media (hover: hover) {
-  .prose a:hover {
-    text-decoration-color: var(--fg);
-  }
 }
 
 .prose h2 {
@@ -1064,16 +1410,52 @@ svg {
   color: var(--fg-3);
 }
 
-.legal-updated {
-  margin-bottom: clamp(32px, 4vw, 48px);
+/* Legal pages: contents rail on wide screens, a foldout above the text on narrow ones. */
+
+.legal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
 }
 
-.legal > h2:first-child {
+.legal > section:first-child > h2 {
   margin-top: 0;
 }
 
-.legal h2 {
-  scroll-margin-top: calc(var(--nav-h) + 48px);
+.legal-toc {
+  display: none;
+}
+
+.legal-toc-compact {
+  max-width: 40em;
+  border-block: 1px solid var(--line);
+}
+
+.legal-toc-compact .legal-toc__list {
+  padding-bottom: 12px;
+}
+
+.legal-toc__heading {
+  margin-bottom: 12px;
+}
+
+.legal-toc__link {
+  display: block;
+  padding-block: 6px;
+  font-size: var(--step--1);
+  line-height: 1.45;
+  color: var(--fg-2);
+  transition: color 150ms var(--ease), border-color 150ms var(--ease);
+}
+
+.legal-toc__link[aria-current='true'] {
+  color: var(--fg);
+}
+
+@media (hover: hover) {
+  .legal-toc__link:hover {
+    color: var(--fg);
+  }
 }
 
 .contact-table {
@@ -1128,22 +1510,20 @@ svg {
      Vertical padding enlarges the tap target without changing layout. */
   display: inline;
   padding-block: 10px;
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color 150ms var(--ease);
-}
-
-@media (hover: hover) {
-  .contact-table__row a:hover {
-    text-decoration-color: var(--fg);
-  }
 }
 
 .contact-table__row .external-link__icon {
   display: inline-block;
   margin-left: 0.2em;
   vertical-align: -0.05em;
+}
+
+/* Email address with its copy button beside it (wrapping under it when the row is narrow). */
+.contact-table__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
 }
 
 .contact-actions {
@@ -1191,10 +1571,7 @@ svg {
 }
 
 .footer__name {
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-size: 1rem;
 }
 
 .footer__brand {
@@ -1249,13 +1626,6 @@ svg {
   color: var(--fg-3);
 }
 
-.footer__fineprint a {
-  color: var(--fg-2);
-  text-decoration: underline;
-  text-decoration-color: var(--line-3);
-  text-underline-offset: 0.2em;
-}
-
 .footer__base {
   display: flex;
   flex-wrap: wrap;
@@ -1268,7 +1638,66 @@ svg {
   color: var(--fg-3);
 }
 
+/* Touch screens: every footer link gets a full-size tap target. */
+@media (pointer: coarse) {
+  .footer__nav a {
+    min-height: 44px;
+  }
+
+  .figure__action,
+  .copy-button {
+    min-height: 44px;
+  }
+
+  .legal-toc__link {
+    padding-block: 10px;
+  }
+}
+
 /* ---------- Responsive ---------- */
+
+/* Wide screens: legal pages get a sticky contents rail beside the text. */
+@media (min-width: 1101px) {
+  .legal-layout {
+    grid-template-columns: minmax(0, 40em) minmax(0, 15em);
+    justify-content: space-between;
+    gap: 64px;
+  }
+
+  .legal-toc-compact {
+    display: none;
+  }
+
+  .legal-toc {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--nav-h) + var(--nav-top) + 32px);
+    max-height: calc(100dvh - var(--nav-h) - var(--nav-top) - 64px);
+    overflow-y: auto;
+  }
+
+  .legal {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .legal-toc__list {
+    border-left: 1px solid var(--line);
+  }
+
+  .legal-toc__link {
+    margin-left: -1px;
+    padding-left: 16px;
+    border-left: 1px solid transparent;
+  }
+
+  .legal-toc__link[aria-current='true'] {
+    border-left-color: var(--fg);
+  }
+}
 
 /* Laptop / tablet landscape */
 @media (max-width: 1100px) {
@@ -1349,12 +1778,7 @@ svg {
 /* Phones */
 @media (max-width: 640px) {
   :root {
-    --nav-h: 56px;
-    --radius: 10px;
-  }
-
-  .hero__mark {
-    display: none;
+    --r-card: 10px;
   }
 
   .hero__actions .button,
@@ -1362,14 +1786,17 @@ svg {
     flex: 1 1 140px;
   }
 
-  /* One label line above section titles on phones; the microcopy aside is desktop-only. */
-  .section__aside {
-    display: none;
-  }
-
   /* The SVGs scale down to roughly half size on phones; enlarge plot text so it stays near 10px. */
   .plot__text {
     font-size: 19px;
+  }
+
+  .figure__notation-wide {
+    display: none;
+  }
+
+  .figure__notation-narrow {
+    display: block;
   }
 
   .principles,
@@ -1392,6 +1819,11 @@ svg {
     flex-wrap: wrap;
   }
 
+  .kv-table {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-index__link,
   .contact-table__row,
   .page__intro-text .contact-table__row,
   .entry,
@@ -1405,6 +1837,10 @@ svg {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 4px 16px;
+  }
+
+  .entry--placeholder .entry__meta {
+    display: none;
   }
 
   .contact-table__row dd {
@@ -1424,15 +1860,6 @@ svg {
 
 /* Very small phones (iPhone SE, 320–375px) */
 @media (max-width: 380px) {
-  .navbar__wordmark {
-    font-size: 0.8125rem;
-    letter-spacing: 0.1em;
-  }
-
-  .hero__eyebrow {
-    letter-spacing: 0.16em;
-  }
-
   .figure__row {
     grid-template-columns: minmax(0, 1fr);
     gap: 4px;
@@ -1444,6 +1871,13 @@ svg {
   *::before,
   *::after {
     transition-duration: 0ms !important;
+    animation: none !important;
+  }
+
+  /* The rule above does not reach view-transition pseudo-elements. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
     animation: none !important;
   }
 }

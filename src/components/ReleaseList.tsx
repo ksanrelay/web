@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { Release } from '../content/publications.ts'
+import EmptyEntry from './EmptyEntry.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import TechnicalLabel from './TechnicalLabel.tsx'
 
@@ -7,10 +8,12 @@ interface ReleaseListProps {
   items: Release[]
   /** Shown instead of the list when there are no items. */
   empty: ReactNode
+  /** Action shown under the empty message, e.g. a link to GitHub. */
+  emptyAction?: ReactNode
 }
 
-export default function ReleaseList({ items, empty }: ReleaseListProps) {
-  if (items.length === 0) return <p className="entry-empty">{empty}</p>
+export default function ReleaseList({ items, empty, emptyAction }: ReleaseListProps) {
+  if (items.length === 0) return <EmptyEntry action={emptyAction}>{empty}</EmptyEntry>
   return (
     <ol className="entry-list">
       {items.map(r => (

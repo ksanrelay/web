@@ -1,5 +1,6 @@
-import FigureFrame from './FigureFrame.tsx'
+import FigureFrame, { type PlotCursor } from './FigureFrame.tsx'
 import { mulberry32, normalSampler, toPath } from './random.ts'
+import { once, signed } from './util.ts'
 
 // Sample autocorrelation of a simulated AR(1) process against its theoretical decay φᵏ,
 // with the ±1.96/√n band used to judge which lags are distinguishable from zero.
@@ -14,6 +15,7 @@ const Y_MAX = 1.05
 const Y_MIN = -0.3
 const y = (v: number) => (H * (Y_MAX - v)) / (Y_MAX - Y_MIN)
 const x = (k: number) => 8 + (k * (W - 16)) / MAX_LAG
+const BAND = 1.96 / Math.sqrt(N)
 
 function simulate(): number[] {
   const z = normalSampler(mulberry32(131))
@@ -37,12 +39,25 @@ function sampleAcf(series: number[], maxLag: number): number[] {
   })
 }
 
-const ACF = sampleAcf(simulate(), MAX_LAG)
-const BAND = 1.96 / Math.sqrt(N)
-const THEORY = toPath(Array.from({ length: 121 }, (_, i) => i / 4).map(k => [x(k), y(PHI ** k)]))
-const SIGNIFICANT = ACF.slice(1).filter(r => Math.abs(r) > BAND).length
+const data = once(() => {
+  const acf = sampleAcf(simulate(), MAX_LAG)
+  const cursor: PlotCursor = {
+    xs: acf.map((_, k) => x(k)),
+    ys: acf.map(r => y(r)),
+    top: 0,
+    bottom: H,
+    read: k => `k = ${k}  acf ${signed(acf[k], 3)}  φᵏ ${(PHI ** k).toFixed(3)}`,
+  }
+  return {
+    acf,
+    theory: toPath(Array.from({ length: 121 }, (_, i) => i / 4).map(k => [x(k), y(PHI ** k)])),
+    significant: acf.slice(1).filter(r => Math.abs(r) > BAND).length,
+    cursor,
+  }
+})
 
 export default function AutocorrelationFigure() {
+  const { acf, theory, significant, cursor } = data()
   return (
     <FigureFrame
       index="Fig. 2"
@@ -53,9 +68,10 @@ export default function AutocorrelationFigure() {
         ['Model', `Xₜ = ${PHI} Xₜ₋₁ + εₜ`],
         ['Theory', 'ρ(k) = φᵏ'],
         ['Band', `±1.96/√n = ±${BAND.toFixed(3)}`],
-        ['Result', `${SIGNIFICANT} of ${MAX_LAG} lags outside band`],
+        ['Result', `${significant} of ${MAX_LAG} lags outside band`],
       ]}
       source={`Simulated AR(1), n = ${N}, Gaussian innovations. Illustrative only.`}
+      cursor={cursor}
     >
       <g className="plot__grid">
         {[0.25, 0.5, 0.75, 1].map(v => (
@@ -71,7 +87,7 @@ export default function AutocorrelationFigure() {
       <line className="plot__envelope" x1={0} y1={y(BAND)} x2={W} y2={y(BAND)} />
       <line className="plot__envelope" x1={0} y1={y(-BAND)} x2={W} y2={y(-BAND)} />
       <g className="plot__stems">
-        {ACF.map((r, k) => {
+        {acf.map((r, k) => {
           const strong = Math.abs(r) > BAND
           return (
             <g key={k} className={strong ? 'plot__stem plot__stem--strong' : 'plot__stem'}>
@@ -81,7 +97,7 @@ export default function AutocorrelationFigure() {
           )
         })}
       </g>
-      <path className="plot__path" d={THEORY} pathLength={1} />
+      <path className="plot__path" d={theory} pathLength={1} />
       <text className="plot__text" x={-8} y={y(1) + 4} textAnchor="end">
         1
       </text>

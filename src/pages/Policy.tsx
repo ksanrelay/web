@@ -29,7 +29,6 @@ export default function Policy() {
   return (
     <PageShell
       meta={ROUTES.policy}
-      label="POLICY"
       title="Policy"
       lead="The terms, disclaimers and privacy practices that apply to this website."
     >

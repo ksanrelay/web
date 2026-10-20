@@ -41,7 +41,7 @@ const byDateDesc = <T extends { date: string }>(a: T, b: T) => b.date.localeComp
 export const sortedPublications = () => [...PUBLICATIONS].sort(byDateDesc)
 export const sortedReleases = () => [...RELEASES].sort(byDateDesc)
 
-export function formatDate(iso: string): string {
+export function formatDate(iso: string, month: 'short' | 'long' = 'short'): string {
   const d = new Date(`${iso}T00:00:00Z`)
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month, year: 'numeric', timeZone: 'UTC' })
 }

@@ -1,5 +1,6 @@
-import FigureFrame from './FigureFrame.tsx'
+import FigureFrame, { type PlotCursor } from './FigureFrame.tsx'
 import { mulberry32, normalSampler, toPath } from './random.ts'
+import { once, signed } from './util.ts'
 
 // Heavy tails: a histogram of standardized Student-t samples (ν = 6) against the Gaussian density.
 // The kurtosis and tail frequency quoted beside the figure are computed from this exact sample.
@@ -24,34 +25,6 @@ function sample(): number[] {
   })
 }
 
-const SAMPLE = sample()
-
-const BINS = (() => {
-  const count = Math.round((2 * X_MAX) / BIN)
-  const counts = new Array<number>(count).fill(0)
-  for (const v of SAMPLE) {
-    const i = Math.floor((v + X_MAX) / BIN)
-    if (i >= 0 && i < count) counts[i]++
-  }
-  return counts.map((c, i) => ({ x0: -X_MAX + i * BIN, density: c / (N * BIN) }))
-})()
-
-const STATS = (() => {
-  const mean = SAMPLE.reduce((a, b) => a + b, 0) / N
-  let m2 = 0
-  let m4 = 0
-  let tail = 0
-  for (const v of SAMPLE) {
-    const d = v - mean
-    m2 += d * d
-    m4 += d ** 4
-    if (Math.abs(v) > 3) tail++
-  }
-  m2 /= N
-  m4 /= N
-  return { kurtosis: m4 / (m2 * m2), tail: tail / N }
-})()
-
 const gaussian = (v: number) => Math.exp((-v * v) / 2) / Math.sqrt(2 * Math.PI)
 // Student-t density for ν = 6: Γ(7/2) / (√(6π) Γ(3)) = 15 / (16√6), rescaled to unit variance.
 const studentT = (v: number) => {
@@ -63,7 +36,45 @@ const grid = Array.from({ length: 161 }, (_, i) => -X_MAX + (i * 2 * X_MAX) / 16
 const GAUSS_PATH = toPath(grid.map(v => [px(v), py(gaussian(v))]))
 const T_PATH = toPath(grid.map(v => [px(v), py(studentT(v))]))
 
+const data = once(() => {
+  const values = sample()
+
+  const count = Math.round((2 * X_MAX) / BIN)
+  const counts = new Array<number>(count).fill(0)
+  for (const v of values) {
+    const i = Math.floor((v + X_MAX) / BIN)
+    if (i >= 0 && i < count) counts[i]++
+  }
+  const bins = counts.map((c, i) => ({ x0: -X_MAX + i * BIN, density: c / (N * BIN) }))
+
+  const mean = values.reduce((a, b) => a + b, 0) / N
+  let m2 = 0
+  let m4 = 0
+  let tail = 0
+  for (const v of values) {
+    const d = v - mean
+    m2 += d * d
+    m4 += d ** 4
+    if (Math.abs(v) > 3) tail++
+  }
+  m2 /= N
+  m4 /= N
+
+  const cursor: PlotCursor = {
+    xs: bins.map(b => px(b.x0 + BIN / 2)),
+    ys: bins.map(b => py(b.density)),
+    top: 0,
+    bottom: H,
+    read: i => {
+      const { x0, density } = bins[i]
+      return `[${signed(x0, 2)}, ${signed(x0 + BIN, 2)})  sample ${density.toFixed(3)}  N(0,1) ${gaussian(x0 + BIN / 2).toFixed(3)}`
+    },
+  }
+  return { bins, kurtosis: m4 / (m2 * m2), tail: tail / N, cursor }
+})
+
 export default function DistributionFigure() {
+  const { bins, kurtosis, tail, cursor } = data()
   return (
     <FigureFrame
       index="Fig. 3"
@@ -72,11 +83,12 @@ export default function DistributionFigure() {
       label="Histogram of standardized Student-t samples with the Student-t density drawn over it and a dashed Gaussian density for comparison; the sample has a taller peak and more mass beyond three standard deviations"
       notation={[
         ['Sample', 'Xᵢ ~ t₆ / √1.5'],
-        ['Kurtosis', `m₄/m₂² = ${STATS.kurtosis.toFixed(2)} (Gaussian 3)`],
-        ['Tail', `P(|X| > 3) = ${(STATS.tail * 100).toFixed(2)}% (Gaussian 0.27%)`],
+        ['Kurtosis', `m₄/m₂² = ${kurtosis.toFixed(2)} (Gaussian 3)`],
+        ['Tail', `P(|X| > 3) = ${(tail * 100).toFixed(2)}% (Gaussian 0.27%)`],
         ['Lesson', 'σ alone understates tail risk'],
       ]}
       source={`Simulated, n = ${N.toLocaleString('en')} draws, unit variance. Illustrative only.`}
+      cursor={cursor}
     >
       <g className="plot__grid">
         {[-4, -2, 0, 2, 4].map(v => (
@@ -87,7 +99,7 @@ export default function DistributionFigure() {
         ))}
       </g>
       <g className="plot__bars">
-        {BINS.map(b => (
+        {bins.map(b => (
           <rect key={b.x0} x={px(b.x0) + 0.5} y={py(b.density)} width={px(b.x0 + BIN) - px(b.x0) - 1} height={H - py(b.density)} />
         ))}
       </g>

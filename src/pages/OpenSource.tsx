@@ -19,23 +19,22 @@ export default function OpenSource() {
   return (
     <PageShell
       meta={ROUTES.openSource}
-      label="OPEN SOURCE"
       title="Open Source"
       lead="Selected models, datasets, libraries and research tools, released publicly. Each release states its own license."
     >
-      <Section index="01" label="RELEASES" title="Releases">
+      <Section label="Releases" title="Releases">
         <ReleaseList
           items={releases}
-          empty={
-            <>
-              No releases yet. Public repositories will appear here and on{' '}
-              <ExternalLink href={CONTACT.github}>GitHub</ExternalLink>.
-            </>
+          empty="No releases yet. Public repositories will appear here and on GitHub."
+          emptyAction={
+            <ExternalLink href={CONTACT.github} className="button">
+              GitHub
+            </ExternalLink>
           }
         />
       </Section>
 
-      <Section index="02" label="SCOPE" title="What we release">
+      <Section label="Scope" title="What we release">
         <dl className="kv-table kv-table--wide">
           {TYPES.map(([type, scope]) => (
             <div key={type} className="kv-table__row">
@@ -46,7 +45,7 @@ export default function OpenSource() {
         </dl>
       </Section>
 
-      <Section index="03" label="LICENSING" title="Licenses and use">
+      <Section label="Licensing" title="Licenses and use">
         <div className="prose">
           <p>
             Each repository or dataset states its license. That license governs reuse of the material it covers.
